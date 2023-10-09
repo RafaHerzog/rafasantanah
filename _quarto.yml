@@ -3,18 +3,21 @@ project:
   output-dir: docs
   
 website:
-  title: "rafasantanah"
+  title: "Rafael Sant'Ana Herzog"
   navbar:
     left:
       - href: index.qmd
-        text: Home
-      - about.qmd
+        text: Sobre mim
+      - posts.qmd
+
 
 format:
   html:
-    theme: cosmo
+    theme: styles.scss
+    mainfont: Gabarito
     css: styles.css
     toc: true
+    page-layout: full
 
-editor: visual
+editor: source
 

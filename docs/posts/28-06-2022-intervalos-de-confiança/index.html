@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.353">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Rafael Sant’Ana Herzog">
+<meta name="dcterms.date" content="2022-06-28">
+<meta name="description" content="Como construir, aplicar e interpretar essas ferramentas estatísticas">
+
+<title>Rafael Sant’Ana Herzog - Intervalos de confiança</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-listing/list.min.js"></script>
+<script src="../../site_libs/quarto-listing/quarto-listing.js"></script>
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script>
+
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-listing .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: [{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      
+      searchColumns: [],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  </script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Rafael Sant’Ana Herzog</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html" rel="" target="">
+ <span class="menu-text">Sobre mim</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../posts.html" rel="" target="">
+ <span class="menu-text">Meus posts</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools ms-auto">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-page-left">
+      <h1 class="title">Intervalos de confiança</h1>
+                  <div>
+        <div class="description">
+          Como construir, aplicar e interpretar essas ferramentas estatísticas
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">estatística</div>
+                <div class="quarto-category">R</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      <div>
+      <div class="quarto-title-meta-heading">Author</div>
+      <div class="quarto-title-meta-contents">
+               <p>Rafael Sant’Ana Herzog </p>
+            </div>
+    </div>
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">June 28, 2022</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introdução-e-definições-iniciais" id="toc-introdução-e-definições-iniciais" class="nav-link active" data-scroll-target="#introdução-e-definições-iniciais">Introdução e definições iniciais</a></li>
+  <li><a href="#o-método-da-quantidade-pivotal" id="toc-o-método-da-quantidade-pivotal" class="nav-link" data-scroll-target="#o-método-da-quantidade-pivotal">O método da quantidade pivotal</a>
+  <ul class="collapse">
+  <li><a href="#intervalo-de-confiança-para-a-média---com-variância-conhecida" id="toc-intervalo-de-confiança-para-a-média---com-variância-conhecida" class="nav-link" data-scroll-target="#intervalo-de-confiança-para-a-média---com-variância-conhecida">Intervalo de confiança para a média - com variância conhecida</a>
+  <ul class="collapse">
+  <li><a href="#no-r" id="toc-no-r" class="nav-link" data-scroll-target="#no-r">No R</a></li>
+  </ul></li>
+  <li><a href="#intervalo-de-confiança-para-a-média---com-variância-desconhecida" id="toc-intervalo-de-confiança-para-a-média---com-variância-desconhecida" class="nav-link" data-scroll-target="#intervalo-de-confiança-para-a-média---com-variância-desconhecida">Intervalo de confiança para a média - com variância desconhecida</a>
+  <ul class="collapse">
+  <li><a href="#no-r-1" id="toc-no-r-1" class="nav-link" data-scroll-target="#no-r-1">No R</a></li>
+  </ul></li>
+  </ul></li>
+  <li><a href="#conclusão" id="toc-conclusão" class="nav-link" data-scroll-target="#conclusão">Conclusão</a></li>
+  <li><a href="#referências" id="toc-referências" class="nav-link" data-scroll-target="#referências">Referências</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
+
+
+
+
+<section id="introdução-e-definições-iniciais" class="level1">
+<h1>Introdução e definições iniciais</h1>
+<p>Em situações da vida real, é comum encontrarmos estimativas para quantidades desconhecidas acompanhadas de uma certa margem de erro. Quando estamos em épocas próximas de eleições, por exemplo, ouvimos a todo momento que um certo candidato tem, digamos, 40% das intenções de voto, com uma margem de erro de 2 pontos percentuais para mais, e 2 pontos percentuais para menos. Em outras palavras, estamos confiantes de que o verdadeiro valor das intenções de voto para esse candidato se encontra entre 38% e 42%. Estimativas pontuais, por mais úteis que sejam, acabam fornecendo uma informação incompleta sobre o valor estimado do parâmetro em questão, uma vez que elas não levam em consideração a variância do estimador utilizado para se obter tal estimativa. Dessa forma, como no exemplo da pesquisa eleitoral, é desejável que uma estimativa pontual seja acompanhada de alguma medida de seu possível erro, podendo essa medida ser, por exemplo, um intervalo relacionado a uma dimensão da <em>confiança</em> que temos de o verdadeiro valor do parâmetro estar sendo captado. Assim, nesse post, conheceremos sobre um dos tipos de estimativas intervalares mais utilizados dentro da Estatística: os <strong>intervalos de confiança</strong>. Apresentaremos a sua definição, discutiremos sobre como interpretá-los corretamente e estudaremos sobre um dos métodos existentes para obtê-los, juntamente com uma série de exemplos que permitam absorver melhor o conteúdo discutido.</p>
+<p>Antes de mais nada, é preciso que dois conceitos importantíssimos estejam bem claros. Em primeiro lugar, considere uma certa distribuição de probabilidade <em>f</em>. Dizemos que <em>n</em> variáveis aleatórias X1, …, Xn formam uma <strong>amostra aleatória</strong> dessa distribuição se todas as variáveis aleatórias forem independentes e se a distribuição marginal de cada variável for <em>f</em>. Em outras palavras, para que X1, …, Xn formem uma amostra aleatória, elas devem ser variáveis aleatórias independentes e identicamente distribuídas (i.i.d.). A segunda definição é em relação ao termo <strong>estatística</strong>: chamamos de estatística qualquer função de variáveis aleatórias observáveis que não dependa de quantidades desconhecidas, sendo ela própria uma variável aleatória observável.</p>
+<p>Com esses conceitos em mente, passemos, sem mais enrolação, para a definição de intervalo de confiança. Seja (X1, …, Xn) uma amostra aleatória de uma distribuição que dependa de um parâmetro (ou vetor de parâmetros) <span class="math inline">\(\theta\)</span>. Seja g(<span class="math inline">\(\theta\)</span>) uma função real de <span class="math inline">\(\theta\)</span>, e sejam T1 = t1(X1, …, Xn) e T2 = t2(X1, …, Xn) duas estatísticas tais que T1 <span class="math inline">\(\leqslant\)</span> T2 e que possuem a propriedade de que, para todos os valores de <span class="math inline">\(\theta\)</span>,</p>
+<p><span class="math display">\[
+P(T_1 &lt; g(\theta) &lt; T_2) \geqslant 1 - \alpha,
+\]</span> com <span class="math inline">\(0 &lt; \alpha &lt; 1\)</span>. Então, o intervalo aleatório <strong>(T1, T2)</strong> é chamado de <strong>intervalo de 100(1 -</strong> <span class="math inline">\(\alpha\)</span>)% de confiança para g(<span class="math inline">\(\theta\)</span>). Além disso, temos que</p>
+<ul>
+<li><span class="math inline">\(\gamma = 1 - \alpha\)</span> é chamado de coeficiente de confiança;</li>
+<li>T1 e T2 são chamados, respectivamente, de limites de confiança inferior e superior para g(<span class="math inline">\(\theta\)</span>).</li>
+</ul>
+<p>Se a inequação “<span class="math inline">\(\geqslant 1 - \alpha\)</span>” se resumir a uma igualdade para todos os valores possíveis de <span class="math inline">\(\theta\)</span>, dizemos que o intervalo de confiança é exato (para distribuições contínuas, o intervalo será sempre exato; a desigualdade é útil para quando estamos trabalhando com distribuições discretas, para as quais é comum não ser possível satisfazer a igualdade). Quando observamos, de fato, os valores de X1, …, Xn por meio da amostra e calculamos os valores de T1 = t1 e T2 = t2, obtemos o intervalo <strong>(t1, t2)</strong>, que é chamado de <strong>valor observado do intervalo de confiança</strong> (apesar de, na prática, também dizermos que (t1, t2) é simplesmente um intervalo de 100(1 - <span class="math inline">\(\alpha\)</span>)% de confiança para <span class="math inline">\(\theta\)</span>).</p>
+<p>A interpretação de um intervalo de confiança deve ser feita com cuidado. É preciso entender que o <strong>intervalo aleatório (T1, T2)</strong> possui probabilidade (1 - <span class="math inline">\(\alpha\)</span>) de conter o verdadeiro valor do parâmetro que estamos estimando, afirmação essa que <strong>não</strong> pode ser feita para o <strong>intervalo de confiança observado (t1, t2)</strong>. Isso porque, antes de colhermos a amostra, as estatísticas T1 e T2 são variáveis aleatórias e, portanto, podemos encontrar a probabilidade de <span class="math inline">\(\theta\)</span> estar dentro do intervalo formado por elas. A partir do momento em que colhemos a amostra e observamos os valores t1 e t2 das estatísticas, entretanto, o intervalo simplesmente conterá, ou não, o valor real do parâmetro; não é mais uma questão de probabilidade. Assim, podemos dizer apenas que temos uma <em>confiança</em> considerável de que o intervalo observado contém o verdadeiro valor do parâmetro. A medida da nossa confiança é de (1 - <span class="math inline">\(\alpha\)</span>) porque, antes de colhermos a amostra, (1 - <span class="math inline">\(\alpha\)</span>) era a probabilidade de que o intervalo aleatório contivesse o verdadeiro valor de <span class="math inline">\(\theta\)</span>.</p>
+<p>Uma outra possível interpretação do conceito de intervalo de confiança é a seguinte: se obtivéssemos várias amostras de mesmo tamanho e, para cada uma delas, calculássemos os correspondentes intervalos de confiança com coeficiente de confiança (1 - <span class="math inline">\(\alpha\)</span>), esperaríamos que a proporção de intervalos que contivessem o verdadeiro valor do parâmetro fosse igual a (1 - <span class="math inline">\(\alpha\)</span>).</p>
+<p>Por fim, podemos fazer algumas considerações a respeito da escolha do valor de <span class="math inline">\(\gamma\)</span> (lembrando que <span class="math inline">\(\gamma = 1 - \alpha\)</span>). Como veremos nos exemplos subsequentes, conforme aumentamos o coeficiente de confiança, os valores de T1 e T2 ficam maiores e, consequentemente, a amplitude do intervalo aumenta (sendo a amplitude definida como a diferença entre os extremos superior e inferior de um intervalo). Isso, claro, é algo que deveríamos esperar, visto que intervalos maiores possuem naturalmente uma maior chance de conterem o verdadeiro valor de um parâmetro desconhecido. Com isso, para que os intervalos sejam o mais <em>informativo</em> possível, mantendo uma confiança elevada, é necessário que selecionemos <span class="math inline">\(\gamma\)</span> de forma balanceada, sendo uma escolha muito comum o valor 0,95 (nesse caso, temos que <span class="math inline">\(\alpha\)</span> = 0,05). É muito mais interessante, por exemplo, um intervalo de confiança que diz que o verdadeiro valor do salário médio de um estatístico está entre 3,5 a 6 salários mínimos do que um intervalo que diz que esse valor está entre 2 a 7,5 salários mínimos. Apesar de, com o segundo intervalo, termos uma maior confiança de que o verdeiro valor do salário médio está sendo captado, a qualidade da informação que extraímos dele é consideravelmente pior do que aquela obtida com o primeiro intervalo.</p>
+<p>Com esses conceitos iniciais em mente, passemos, agora, para exemplos da construção de intervalos de confiança em algumas situações mais usuais, utilizando para isso um método denominado <strong>método da quantidade pivotal</strong>.</p>
+</section>
+<section id="o-método-da-quantidade-pivotal" class="level1">
+<h1>O método da quantidade pivotal</h1>
+<p>Antes de apresentarmos o método propriamente dito, comecemos, primeiramente, com uma definição. Seja (X1, …, Xn) uma amostra aleatória de uma certa distribuição <em>f</em> com parâmetro (ou vetor de parâmetros) <span class="math inline">\(\theta\)</span>. Seja Q uma função da amostra e de <span class="math inline">\(\theta\)</span> (e de não mais nenhum outro parâmetro desconhecido). Se a distribuição de probabilidade de Q não depende de <span class="math inline">\(\theta\)</span> e de nenhuma outra quantidade desconhecida, temos que Q é definida como sendo uma <strong>quantidade pivotal</strong>.</p>
+<p>A ideia do método da quantidade pivotal, como o nome já sugere, é utilizar uma quantidade pivotal para se obter um intervalo de confiança para um determinado parâmetro. Assim, considere uma amostra aleatória de uma certa distribuição <em>f</em> com parâmetro <span class="math inline">\(\theta\)</span> e uma quantidade pivotal Q. Como visto na definição acima, sabemos que Q segue uma distribuição de probabilidade que não depende do parâmetro desconhecido <span class="math inline">\(\theta\)</span>. Dessa forma, para um valor fixado de <span class="math inline">\(\alpha\)</span>, com 0 &lt; <span class="math inline">\(\alpha\)</span> &lt; 1, podemos encontrar valores q1 e q2 dependentes de <span class="math inline">\(\alpha\)</span> tais que</p>
+<p><span class="math display">\[
+P(q_1 &lt; Q &lt; q_2) = 1 - \alpha.
+\]</span> Lembre-se que Q é uma função da amostra e de <span class="math inline">\(\theta\)</span>. Como queremos criar um intervalo de confiança para tal parâmetro, precisamos isolá-lo na desigualdade acima. Ou seja, temos que “inverter” a quantidade pivotal. Com um pouquinho de ajuda da álgebra, a expressão resultante desse processo será algo da forma</p>
+<p><span class="math display">\[
+P\left(t_1(X_1, ..., X_n) &lt; \theta &lt; t_2(X_1, ..., X_n)\right) = 1 - \alpha.
+\]</span> Caso consigamos realizar o procedimento acima, isolando <span class="math inline">\(\theta\)</span> e encontrando funções T1 = t1(X1, …, Xn) e T2 = t2(X1, …, Xn) que não dependam desse parâmetro, temos que <strong>(T1, T2)</strong> é um intervalo de 100(1 - <span class="math inline">\(\alpha\)</span>)% de confiança para <span class="math inline">\(\theta\)</span>. Algo a se notar é que, sendo a amplitude desse intervalo dada por</p>
+<p><span class="math display">\[
+t_2(X_1, ..., X_n) - t_1(X_1, ..., X_n),
+\]</span> é de nosso interesse que selecionemos, entre todos os possíveis valores de q1 e q2 que satisfaçam <strong>P(q1 &lt; Q &lt; q2) = 1 -</strong> <span class="math inline">\(\alpha\)</span>, aqueles que tornem os valores de T1 e T2 os mais próximos possíveis, para que a amplitude do intervalo seja mínima. Dessa forma, para um valor definido de <span class="math inline">\(\alpha\)</span>, teremos o intervalo de confiança mais informativo possível. Como ainda não entramos em situações mais concretas, as definições acima podem não estar totalmente claras, mas veremos que colocá-las em prática não é tão difícil assim conforme adquirimos mais experiência. Algumas considerações a respeito de como encontrar q1 e q2 serão discutidas nos exemplos a seguir, nos quais iremos considerar amostras aleatórias da distribuição normal para a criação de intervalos de confiança para a média populacional, utilizando para isso o método explicado acima.</p>
+<section id="intervalo-de-confiança-para-a-média---com-variância-conhecida" class="level2">
+<h2 class="anchored" data-anchor-id="intervalo-de-confiança-para-a-média---com-variância-conhecida">Intervalo de confiança para a média - com variância conhecida</h2>
+<p>Começando do exemplo mais simples, considere uma amostra aleatória (X1, …, Xn) da distribuição N(<span class="math inline">\(\mu\)</span>, <span class="math inline">\(\sigma\)</span>^2), com variância populacional conhecida, e suponha que queremos criar um intervalo de confiança para <span class="math inline">\(\mu\)</span>. Utilizando o método apresentado acima, o primeiro passo para a resolução desse problema é encontrar uma função que dependa apenas da amostra e de <span class="math inline">\(\mu\)</span>, e cuja distribuição de probabilidade independa de tal parâmetro, para que possamos utilizar como quantidade pivotal. Note, primeiramente, que, sendo X1,…, Xn variáveis normais, independentes e identicamente distribuídas, sabemos que</p>
+<p><span class="math display">\[
+\bar{X} \sim N\left(\mu,\frac{\sigma^2}{n}\right),
+\]</span> sendo</p>
+<p><span class="math display">\[
+\bar{X} = \frac{\sum_i^n X_i}{n}.
+\]</span></p>
+<p>Dessa forma, subtraindo a média e dividindo o resultado pelo desvio padrão, podemos padronizar a variável acima, a saber</p>
+<p><span class="math display">\[
+Z = \frac{\bar{X} - \mu}{\sigma/\sqrt{n}} = \frac{\sqrt{n}\left(\bar{X} - \mu\right)}{\sigma} \sim N(0, 1).
+\]</span></p>
+<p>Perceba que, como <span class="math inline">\(\sigma\)</span> é conhecido, nada impede que esse termo esteja presente na quantidade pivotal que queremos encontrar. Logo, como Z é uma função da amostra e de <span class="math inline">\(\mu\)</span>, e como sua distribuição independe de tal parâmetro, podemos utilizá-la como quantidade pivotal para a criação do intervalo de confiança desejado. Assim, definindo um valor de <span class="math inline">\(\alpha\)</span>, com 0 &lt; <span class="math inline">\(\alpha\)</span> &lt; 1, podemos encontrar z1 e z2 dependentes de <span class="math inline">\(\alpha\)</span> tais que</p>
+<p><span class="math display">\[
+P\left(z_1 &lt; Z &lt; z_2\right) = 1 - \alpha.
+\]</span></p>
+<p>Substituindo Z pela expressão obtida acima,</p>
+<p><span class="math display">\[
+P\left(z_1 &lt; \frac{\sqrt{n}\left(\bar{X} - \mu\right)}{\sigma} &lt; z_2 \right) = 1 - \alpha.
+\]</span></p>
+<p>Isolando <span class="math inline">\(\mu\)</span>,</p>
+<p><span class="math display">\[
+\begin{align}
+P\left(z_1 &lt; \frac{\sqrt{n}\left(\bar{X} - \mu\right)}{\sigma} &lt; z_2 \right) &amp; = P\left(z_1\sigma &lt; \sqrt{n}\left(\bar{X} - \mu\right) &lt; z_2\sigma \right) \\
+&amp; = P\left(z_1\frac{\sigma}{\sqrt{n}} &lt; \bar{X} - \mu &lt; z_2\frac{\sigma}{\sqrt{n}} \right) \\
+&amp; = P\left(-\bar{X} + z_1\frac{\sigma}{\sqrt{n}} &lt; - \mu &lt; -\bar{X} + z_2\frac{\sigma}{\sqrt{n}} \right) \\
+&amp; = P\left(\bar{X} - z_2\frac{\sigma}{\sqrt{n}} &lt; \mu &lt; \bar{X} - z_1\frac{\sigma}{\sqrt{n}} \right) = 1 - \alpha \qquad \text{(I)}
+\end{align}
+\]</span></p>
+<p>Note, entretanto, que ainda precisamos definir quem serão z1 e z2, uma vez que existem infinitos pares de valores que satisfazem <strong>P(z1 &lt; Z &lt; z2) = 1 -</strong> <span class="math inline">\(\alpha\)</span>. Como é de nosso interesse obter o intervalo que ofereça a melhor informação possível, é necessário que encontremos z1 e z2 que minimizem a amplitude do intervalo de confiança, que nesse caso é dada por</p>
+<p><span class="math display">\[
+\bar{X} - z_1\frac{\sigma}{\sqrt{n}} - \left(\bar{X} - z_2\frac{\sigma}{\sqrt{n}}\right) = \frac{\sigma}{\sqrt{n}}(z_2 - z_1).
+\]</span></p>
+<p>Dessa forma, o intervalo de valores plausíveis do parâmetro desconhecido será o menor possível, e, com isso, podemos ter uma noção mais precisa do verdadeiro valor do parâmetro que estamos estimando. Para distribuições de probabilidade simétricas, obter essas quantidades é simples: definido um valor de <span class="math inline">\(\alpha\)</span>, e considerando uma quantidade pivotal W cuja distribuição é simétrica, basta que encontremos w1 e w2 tais que</p>
+<p><span class="math display">\[
+P(W \leqslant w_1) = P(W &gt; w_2) = \frac{\alpha}{2},
+\]</span> e denotamos esses valores por</p>
+<p><span class="math display">\[
+w_1 = w_{\alpha/2} \text{ e } w_2 = w_{1 - \alpha/2}.
+\]</span></p>
+<p>Além disso, caso a distribuição de probabilidade da variável seja simétrica em torno de zero, é possível mostrar que a amplitude do intervalo será mínima se w1 e w2 forem valores opostos, ou seja, se <strong>w1 = -w2</strong>.</p>
+<p>Voltando para o exemplo em questão, como a quantidade pivotal Z segue distribuição normal padrão, que é uma distribuição simétrica em torno de zero, precisamos apenas encontrar z tal que</p>
+<p><span class="math display">\[
+P(Z \leqslant z) = 1 - \frac{\alpha}{2}.
+\]</span></p>
+<p>Denotaremos esse valor de z por</p>
+<p><span class="math display">\[
+z_{1 -\alpha/2},
+\]</span></p>
+<p>e utilizaremos notações semelhantes ao longo das explicações. Com isso, podemos reescrever z1 e z2 como sendo</p>
+<p><span class="math display">\[
+z_1 = -z_{1 - \alpha/2} \text{ e } z_2 = z_{1 - \alpha/2}.
+\]</span> Para absorver melhor a explicação acima, observe o gráfico a seguir, que representa a curva da densidade de probabilidade da distribuição normal padrão.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="normal_padrao.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption"><strong>Figura 1:</strong> Para uma confiança de (100 - <span class="math inline">\(\alpha\)</span>)%, a área em cada cauda da distribuição deverá ser de <span class="math inline">\(\alpha\)</span>/2 para que o intervalo seja o menor possível.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Em uma situação prática, na qual teríamos um valor definido de <span class="math inline">\(\alpha\)</span>, poderíamos utilizar uma tabela da distribuição normal padrão para encontrar o valor z de interesse, ou mesmo utilizar a função qnorm(), do pacote básico {stats}, do R, para realizar esse processo. A função qnorm(), bem como a família de funções do R que seguem a estrutura “qnome_da_distribuição()”, representa a função quantílica: para uma dada probabilidade e para dados valores dos parâmetros da distribuição, a função retorna o valor para o qual a probabilidade acumulada até o ponto seja a probabilidade estipulada em seus argumentos.</p>
+<p>Voltando, por fim, à equação I, temos</p>
+<p><span class="math display">\[
+P\left(\bar{X} - z_2\frac{\sigma}{\sqrt{n}} &lt; \mu &lt; \bar{X} - z_1\frac{\sigma}{\sqrt{n}} \right) = P\left(\bar{X} - z_{1 - \alpha/2}\frac{\sigma}{\sqrt{n}} &lt; \mu &lt; \bar{X} + z_{1 - \alpha/2}\frac{\sigma}{\sqrt{n}} \right) = 1 - \alpha.
+\]</span></p>
+<p>Portanto, um intervalo de 100(1 - <span class="math inline">\(\alpha\)</span>)% de confiança para <span class="math inline">\(\mu\)</span>, quando a variância populacional é conhecida, é dado por</p>
+<p><span class="math display">\[
+IC(\mu,\ 1 - \alpha) = \left(\bar{X} - z_{1 - \alpha/2}\frac{\sigma}{\sqrt{n}};\; \bar{X} + z_{1 - \alpha/2}\frac{\sigma}{\sqrt{n}}\right).
+\]</span></p>
+<p>Substituindo as letras por números, considere o seguinte exemplo. Suponha que, por analogia a produtos similares, o tempo de reação de um novo medicamento possa ser considerado como tendo uma distribuição Normal com média <span class="math inline">\(\mu\)</span>, desconhecida, e desvio padrão igual a 2 minutos. Considere que uma amostra aleatória de vinte e cinco pacientes foi obtida, que cada paciente recebeu o medicamento e que o tempo médio de reação do medicamento nesses pacientes tenha sido de 4,5 minutos. A pedido de um farmacêutico, queremos verificar se 6 minutos é um tempo plausível para o verdadeiro valor do tempo médio de reação do medicamento. Dessa forma, podemos resolver esse problema a partir da criação de um intervalo de confiança para <span class="math inline">\(\mu\)</span>, que é o valor populacional do tempo médio de reação. Do enunciado, sabemos que:</p>
+<ul>
+<li><p>Podemos utilizar o intervalo de confiança obtido acima para o problema em questão, uma vez que os dados seguem distribuição normal com média desconhecida e desvio padrão conhecido e igual a 2;</p></li>
+<li><p>O tamanho da amostra, <em>n</em>, é 25;</p></li>
+<li><p>A média amostral é 4,5.</p></li>
+</ul>
+<p>Assim, adotando um nível de confiança de 95% (logo, <span class="math inline">\(\alpha\)</span> = 0,05), e substituindo os valores conhecidos na fórmula acima, temos:</p>
+<p><span class="math display">\[
+\begin{align}
+IC(\mu,\ 95\%) &amp; = \left(4,5 - z_{1 - 0,05/2}\left(\frac{2}{\sqrt{25}}\right);\; 4,5 + z_{1 - 0,05/2}\left(\frac{2}{\sqrt{25}}\right)\right) \\
+&amp; = \left(4,5 - z_{1 - 0,025}\left(\frac{2}{5}\right);\; 4,5 + z_{1 - 0,025}\left(\frac{2}{5}\right)\right) \\
+&amp; = \left(4,5 - z_{0,975}(0,4);\; 4,5 + z_{0,975}(0,4)\right)
+\end{align}
+\]</span></p>
+<p>Utilizando a função qnorm(), já explicada anteriormente, para encontrar o quantil da normal padrão tal que, dele para trás, a probabilidade acumulada seja de 0,975,</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qnorm</span>(<span class="at">p =</span> <span class="fl">0.975</span>, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.959964</code></pre>
+</div>
+</div>
+<p>Aproximando o resultado acima, temos que</p>
+<p><span class="math display">\[
+z_{1 - \alpha/2} = z_{0,975} = 1,96.
+\]</span></p>
+<p>Assim, voltando ao intervalo de confiança,</p>
+<p><span class="math display">\[
+\begin{align}
+IC(\mu,\ 95\%) &amp; = \left(4,5 - 1,96(0,4);\ 4,5 + 1,96(0,4)\right) \\
+&amp; = (4,5 - 0,784;\ 4,5 + 0,784) \\
+&amp; = (3,716;\ 5,284).
+\end{align}
+\]</span></p>
+<p>Portanto, um intervalo de 95% de confiança para o tempo médio de reação do medicamento é de <strong>(3,716; 5,284)</strong>. Dessa forma, podemos concluir, com 95% de confiança, que 6 não é um valor plausível para o verdadeiro valor do parâmetro desconhecido <span class="math inline">\(\mu\)</span>.</p>
+<p>Algumas considerações importantes que podem ser feitas aqui são o efeito da escolha de <span class="math inline">\(\alpha\)</span> e do valor de <em>n</em> na amplitude do intervalo encontrado. Se tivéssemos escolhido como nível de confiança o valor de 99%, teríamos como resultado o intervalo <strong>(3,47; 5,53)</strong>. Observe que a amplitude desse intervalo é de 2,06, enquanto a amplitude do primeiro é de 1,568. Dessa forma, a qualidade da informação que obtemos com o intervalo de 95% de confiança é claramente melhor do que a obtida utilizando uma confiança maior. Considere agora que o tamanho da amostra aleatória coletada seja <em>n = 100</em>, e que a média amostral se manteve em 4,5 minutos. Um intervalo de 95% de confiança para essa situação seria <strong>(4,108; 4,892)</strong>, que é significativamente mais informativo do que os intervalos obtidos quando o tamanho da amostra era 25. Dessa forma, podemos perceber, como é intuitivamente esperado, que é de forte interesse obter amostras que sejam as maiores possíveis, visto que as estimativas obtidas por meio delas são consideravelmente mais precisas.</p>
+<section id="no-r" class="level3">
+<h3 class="anchored" data-anchor-id="no-r">No R</h3>
+<p>Como não vivemos mais em tempos arcaicos, nos quais uma folha de papel, um lápis e tabelas de valores críticos eram os únicos artifícios disponíveis, podemos, é claro, utilizar o R para facilitar a criação de intervalos de confiança. Aproveitando o exemplo acima, suponha que os tempos de reação do medicamento observados na amostra de 25 pacientes tenham sido os seguintes:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>amostra <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">1.7</span>, <span class="fl">2.8</span>, <span class="fl">3.3</span>, <span class="fl">6.4</span>, <span class="fl">3.0</span>, <span class="fl">2.0</span>, <span class="fl">9.3</span>, <span class="fl">3.7</span>, <span class="fl">4.8</span>, <span class="fl">3.0</span>, <span class="fl">5.8</span>, <span class="fl">2.8</span>, <span class="fl">4.7</span>, <span class="fl">6.1</span>, <span class="fl">2.7</span>, <span class="fl">4.2</span>, <span class="fl">2.6</span>, <span class="fl">4.6</span>,</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>           <span class="fl">4.5</span>, <span class="fl">7.0</span>, <span class="fl">0.2</span>, <span class="fl">7.0</span>, <span class="fl">6.5</span>, <span class="fl">7.7</span>, <span class="fl">6.1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Nesse passo, criaremos uma função, a qual chamaremos de ic_media_caso1(), que calculará intervalos de confiança para o parâmetro <span class="math inline">\(\mu\)</span>, da distribuição normal, quando a variância populacional é conhecida. A função possuirá três argumentos: “dados”, que receberá o vetor de valores observados na amostra; “sigma”, que receberá o valor da variância populacional; e “gamma”, que receberá o coeficiente de confiança associado ao intervalo. Calcularemos a média e o tamanho da amostra utilizando, respectivamente, as funções mean() e length(), ambas do pacote básico {base}, e utilizaremos a já explicada função qnorm() para encontrar o valor do quantil da normal padrão (não utilizaremos os argumentos “mean” e “sigma” dessa função, uma vez que seus valores padrão são, respectivamente, 1 e 0). Construiremos o intervalo nos vetores “limite_inferior” e “limite_superior”, utilizando a formulação obtida mais acima. A função retornará um data.frame contendo algumas medidas referentes à amostra e o intervalo de confiança propriamente dito. O resultado do processo pode ser visto abaixo.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ic_media_caso1 <span class="ot">&lt;-</span> <span class="cf">function</span>(dados, sigma, gamma) {</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  media <span class="ot">&lt;-</span> <span class="fu">mean</span>(dados)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">length</span>(dados)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  alfa <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> gamma</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  z <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">qnorm</span>(<span class="at">p =</span> <span class="dv">1</span> <span class="sc">-</span> alfa<span class="sc">/</span><span class="dv">2</span>), <span class="dv">3</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  limite_inferior <span class="ot">&lt;-</span> <span class="fu">round</span>(media <span class="sc">-</span> z <span class="sc">*</span> sigma<span class="sc">/</span><span class="fu">sqrt</span>(n), <span class="dv">3</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  limite_superior <span class="ot">&lt;-</span> <span class="fu">round</span>(media <span class="sc">+</span> z <span class="sc">*</span> sigma<span class="sc">/</span><span class="fu">sqrt</span>(n), <span class="dv">3</span>)</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  amplitude <span class="ot">&lt;-</span> limite_superior <span class="sc">-</span> limite_inferior</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">data.frame</span>(n, media, limite_inferior, limite_superior, amplitude))</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ic_media_caso1</span>(<span class="at">dados =</span> amostra, <span class="at">sigma =</span> <span class="dv">2</span>, <span class="at">gamma =</span> <span class="fl">0.95</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   n media limite_inferior limite_superior amplitude
+1 25   4.5           3.716           5.284     1.568</code></pre>
+</div>
+</div>
+<p>Como podemos perceber, o resultado obtido, como já era de se esperar, foi o mesmo que o encontrado anteriormente. Apesar de um pouquinho cansativo, este primeiro exemplo servirá de base para o que está por vir. Vamos ao próximo.</p>
+</section>
+</section>
+<section id="intervalo-de-confiança-para-a-média---com-variância-desconhecida" class="level2">
+<h2 class="anchored" data-anchor-id="intervalo-de-confiança-para-a-média---com-variância-desconhecida">Intervalo de confiança para a média - com variância desconhecida</h2>
+<p>Nessa segunda situação, considere agora uma amostra aleatória (X1, …, Xn) da distribuição N(<span class="math inline">\(\mu\)</span>, <span class="math inline">\(\sigma\)</span>^2), com variância populacional desconhecida, e suponha que queremos novamente criar um intervalo de confiança para <span class="math inline">\(\mu\)</span>. Assim como no exemplo anterior (e em todos os que estão por vir), o primeiro passo é encontrarmos uma quantidade pivotal que nos permita construir tal intervalo. Como definido anteriormente, sabemos que</p>
+<p><span class="math display">\[
+Z = \frac{\sqrt{n}\left(\bar{X} - \mu\right)}{\sigma} \sim N(0, 1).
+\]</span></p>
+<p>Lembre-se, entretanto, que estamos no caso em que <span class="math inline">\(\sigma\)</span> é desconhecido, e por isso não podemos utilizar a função acima como quantidade pivotal nesse problema. Assim, utilizaremos dois resultados conhecidos dentro da Estatística para chegar em uma função que nos seja útil. Em primeiro lugar, se (X1, …, Xn) formam uma amostra aleatória da distribuição N(<span class="math inline">\(\mu\)</span>, <span class="math inline">\(\sigma\)</span>^2), temos que</p>
+<p><span class="math display">\[
+Q = \frac{\left(n - 1\right) S^2}{\sigma^2} \sim \chi^2_{n-1},
+\]</span></p>
+<p>onde</p>
+<p><span class="math display">\[
+S^2 = \frac{\sum_{i = 1}^n (X_i - \bar{X})}{n -1}
+\]</span> é a variância amostral. Além disso, é possível demonstrar que Z e Q são independentes. O outro resultado que utilizaremos para encontrar a quantidade pivotal é o seguinte: se temos duas variáveis aleatórias independentes U e W tais que</p>
+<p><span class="math display">\[
+U \sim N(0, 1)\text{ e } W \sim \chi^2_v,
+\]</span></p>
+<p>então é válido que</p>
+<p><span class="math display">\[
+T = \frac{U}{\sqrt{W/v}} \sim t_{v},
+\]</span></p>
+<p>onde <span class="math inline">\(t_{v}\)</span> representa a distribuição T de Student com <em>v</em> graus de liberdade. Convenientemente, definimos acima variáveis independentes Z e Q que seguem, respectivamente, distribuição normal padrão e distribuição qui-quadrado com (n - 1) graus de liberdade. Dessa forma, nada nos impede de utilizar o resultado anterior para tentarmos obter alguma função de interesse. Assim, substituindo as devidas expressões, temos</p>
+<p><span class="math display">\[
+\begin{align}
+T = \frac{Z}{\sqrt{Q/(n-1)}} &amp; = \frac{\sqrt{n}\left(\bar{X} - \mu\right)/\sigma}{\sqrt{\frac{\left(n - 1\right) S^2/\sigma^2}{n - 1}}} \\
+&amp; = \frac{\sqrt{n}\left(\bar{X} - \mu\right)/\sigma}{\sqrt{\frac{\left(n - 1\right) S^2}{\sigma^2(n - 1)}}} \\
+&amp; = \frac{\sqrt{n}\left(\bar{X} - \mu\right)/\sigma}{S/\sigma} \\
+&amp; = \frac{\sqrt{n}\left(\bar{X} - \mu\right)}{S} \sim t_{n - 1}
+\end{align}
+\]</span></p>
+<p>E <em>voilà</em>! Acabamos encontrando uma função que depende apenas da amostra e de <span class="math inline">\(\mu\)</span>, sem depender de <span class="math inline">\(\sigma\)</span>, e cuja distribuição independe de ambos os parâmetros desconhecidos. Logo, podemos utilizá-la como quantidade pivotal para construirmos um intervalo de confiança para <span class="math inline">\(\mu\)</span>. Assim, definido um valor de <span class="math inline">\(\alpha\)</span>, com 0 &lt; <span class="math inline">\(\alpha\)</span> &lt; 1, podemos encontrar t1 e t2 tais que</p>
+<p><span class="math display">\[
+P\left(t_{1_{(n-1)}} &lt; T &lt; t_{2_{(n-1)}} \right) = 1 - \alpha.
+\]</span> Substituindo T pela expressão encontrada acima,</p>
+<p><span class="math display">\[
+P\left(t_{1_{(n-1)}} &lt; \frac{\sqrt{n}\left(\bar{X} - \mu\right)}{S} &lt; t_{2_{(n-1)}} \right) = 1 - \alpha.
+\]</span></p>
+<p>Isolando <span class="math inline">\(\mu\)</span>,</p>
+<p><span class="math display">\[
+\begin{align}
+P\left(t_{1_{(n-1)}} &lt; \frac{\sqrt{n}\left(\bar{X} - \mu\right)}{S} &lt; t_{2_{(n-1)}} \right) &amp; = P\left(t_{1_{(n-1)}} S &lt; \sqrt{n}\left(\bar{X} - \mu\right) &lt; t_{2_{(n-1)}} S\right) \\
+&amp; = P\left(t_{1_{(n-1)}} \frac{S}{\sqrt{n}} &lt; \bar{X} - \mu &lt; t_{2_{(n-1)}} \frac{S}{\sqrt{n}} \right) \\
+&amp; = P\left(-\bar{X} + t_{1_{(n-1)}} \frac{S}{\sqrt{n}} &lt; - \mu &lt; -\bar{X} + t_{2_{(n-1)}} \frac{S}{\sqrt{n}} \right) \\
+&amp; = P\left(\bar{X} - t_{2_{(n-1)}} \frac{S}{\sqrt{n}} &lt; \mu &lt; \bar{X} - t_{1_{(n-1)}} \frac{S}{\sqrt{n}} \right) = 1 - \alpha \qquad \textrm{(II)}
+\end{align}
+\]</span></p>
+<p>Para obtermos os valores de t1 e t2, utilizaremos o mesmo procedimento detalhado no exemplo anterior, uma vez que a distribuição T de Student também é uma distribuição simétrica em torno de zero. Assim, basta que encontremos t tal que</p>
+<p><span class="math display">\[
+P(T \leqslant t) = 1 - \frac{\alpha}{2},\text{ com }T \sim t_{n - 1},
+\]</span></p>
+<p>o qual denotaremos por</p>
+<p><span class="math display">\[
+t_{(n - 1;\;1 -\alpha/2)}.
+\]</span></p>
+<p>Com isso, podemos definir t1 e t2 como sendo</p>
+<p><span class="math display">\[
+t_1 = -t_{(n - 1;\;1 -\alpha/2)} \text{ e } t_2 = t_{(n - 1;\;1 -\alpha/2)}.
+\]</span> Para um melhor entendimento, observe o gráfico abaixo, que representa a curva da densidade de probabilidade da distribuição T de Student com <em>n</em> graus de liberdade.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="t_student.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption"><strong>Figura 2:</strong> Para uma confiança de (100 - <span class="math inline">\(\alpha\)</span>)%, a área em cada cauda da distribuição deverá ser de <span class="math inline">\(\alpha\)</span>/2 para que o intervalo seja o menor possível.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Novamente, em uma situação prática, na qual teríamos um valor definido de <span class="math inline">\(\alpha\)</span>, poderíamos utilizar tanto uma tabela da distribuição T de Student quanto a função qt(), do R, para encontrar o valores de t1 e t2. De qualquer forma, retornando à equação II, temos:</p>
+<p><span class="math display">\[
+P\left(\bar{X} - t_{2_{(n-1)}} \frac{S}{\sqrt{n}} &lt; \mu &lt; \bar{X} - t_{1_{(n-1)}} \frac{S}{\sqrt{n}} \right) = P\left(\bar{X} - t_{(n - 1;\;1 - \alpha/2)} \frac{S}{\sqrt{n}} &lt; \mu &lt; \bar{X} + t_{(n - 1;\;1 -\alpha/2)} \frac{S}{\sqrt{n}} \right) = 1 - \alpha.
+\]</span></p>
+<p>Portanto, um intervalo de 100(1 - <span class="math inline">\(\alpha\)</span>)% de confiança para <span class="math inline">\(\mu\)</span>, quando a variância populacional é desconhecida, é dado por</p>
+<p><span class="math display">\[
+IC(\mu,\ 1 - \alpha) = \left(\bar{X} - t_{(n-1;\;1 - \alpha/2)} \frac{S}{\sqrt{n}}; \bar{X} + t_{(n-1;\;1 - \alpha/2)} \frac{S}{\sqrt{n}} \right).
+\]</span></p>
+<p>Algo interessante a se observar é que tanto o intervalo aleatório acima quanto o intervalo aleatório encontrado no exemplo anterior possuem 95% de probabilidade de conterem o verdadeiro valor do parâmetro <span class="math inline">\(\mu\)</span>, mesmo que suas estruturas sejam diferentes. Entretanto, como na construção do intervalo apresentado no presente exemplo foi utilizado um estimador de <span class="math inline">\(\sigma\)</span>, a amplitude média dos intervalos de confiança obtidos por esse método será maior do que a amplitude média dos intervalos obtidos quando utilizamos o método apresentado no exemplo anterior. Com isso, dizemos que o intervalo de confiança acima é menos informativo, uma vez que o intervalo de valores plausíveis para <span class="math inline">\(\mu\)</span>, nesse caso, será maior que o do intervalo de confiança construído anteriormente. Esse problema é mais evidente para tamanhos pequenos de amostra, e torna-se menos relevante conforme o valor de <em>n</em> aumenta.</p>
+<section id="no-r-1" class="level3">
+<h3 class="anchored" data-anchor-id="no-r-1">No R</h3>
+<p>Para demonstrar a diferença entre o intervalo de confiança derivado acima e aquele derivado no exemplo anterior, podemos aproveitar o mesmo exemplo sobre o tempo de reação de um medicamento previamente discutido. Novamente, criaremos uma função, a qual chamaremos de ic_media_caso2(), que retornará o intervalo de confiança para a média populacional quando utilizamos uma amostra aleatória da distribuição normal, considerando a variância populacional desconhecida. A função se dará de forma similar àquela criada anteriormente, sendo as únicas diferenças o cálculo do desvio padrão amostral, feito com a função sd(), do pacote básico {stats} e a obtenção do quantil da distribuição T de Student através da função qt(), do mesmo pacote. O resultado do processo pode ser visto abaixo. Lembre-se que o vetor “amostra” foi criado no exemplo anterior.</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>ic_media_caso2 <span class="ot">&lt;-</span> <span class="cf">function</span>(dados, gamma) {</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  media <span class="ot">&lt;-</span> <span class="fu">mean</span>(dados)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">length</span>(dados)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  S <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">sd</span>(dados), <span class="dv">3</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  alfa <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> gamma</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  t <span class="ot">&lt;-</span> <span class="fu">qt</span>(<span class="dv">1</span> <span class="sc">-</span> alfa<span class="sc">/</span><span class="dv">2</span>, n <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  limite_inferior <span class="ot">&lt;-</span> <span class="fu">round</span>(media <span class="sc">-</span> t <span class="sc">*</span> S<span class="sc">/</span><span class="fu">sqrt</span>(n), <span class="dv">3</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  limite_superior <span class="ot">&lt;-</span> <span class="fu">round</span>(media <span class="sc">+</span> t <span class="sc">*</span> S<span class="sc">/</span><span class="fu">sqrt</span>(n), <span class="dv">3</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  amplitude <span class="ot">&lt;-</span> limite_superior <span class="sc">-</span> limite_inferior</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">data.frame</span>(n, media, S, limite_inferior, limite_superior, amplitude))</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ic_media_caso2</span>(<span class="at">dados =</span> amostra, <span class="at">gamma =</span> <span class="fl">0.95</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   n media     S limite_inferior limite_superior amplitude
+1 25   4.5 2.162           3.608           5.392     1.784</code></pre>
+</div>
+</div>
+<p>Como podemos perceber, o intervalo de confiança obtido acima apresenta uma amplitude levemente maior do que o intervalo obtido anteriormente (1,784 contra 1,568), no qual utilizamos a informação de que a variância populacional era conhecida durante o processo da construção do intervalo. Dessa forma, apesar de a diferença não ser gritante, podemos perceber que a utilização de uma estimativa para o valor da variância populacional acarretou, como já explicado anteriormente, em um intervalo levemente menos informativo a respeito do verdadeiro valor da média populacional.</p>
+<p>Com isso, aqui encerramos os exemplos de intervalos de confiança para a distribuição normal construídos a partir do método da quantidade pivotal. Como considerações finais, podemos dizer que:</p>
+<ul>
+<li><p>É possível mostrar que, para qualquer amostra de uma distribuição de probabilidade contínua, pelo menos uma quantidade pivotal existe;</p></li>
+<li><p>Se <span class="math inline">\(\theta\)</span> for um parâmetro de localização (ou seja, um parâmetro que determina onde a distribuição está centrada no eixo x e que, quando alterado, é responsável por transladar o gráfico da função densidade/massa de probabilidade para a esquerda ou para a direita), então a função</p></li>
+</ul>
+<p><span class="math display">\[
+X_i - \theta
+\]</span> possui distribuição independente de <span class="math inline">\(\theta\)</span> e, portanto, pode ser utilizada como uma quantidade pivotal;</p>
+<ul>
+<li>Se <span class="math inline">\(\theta\)</span> for um parâmetro de escala (ou seja, um parâmetro que, quando alterado, é responsável por expandir ou comprimir o gráfico da função densidade/massa de probabilidade da distribuição), então a função</li>
+</ul>
+<p><span class="math display">\[
+\frac{X_i}{\theta}
+\]</span> possui distribuição independente de <span class="math inline">\(\theta\)</span> e, portanto, pode ser utilizada como uma quantidade pivotal.</p>
+</section>
+</section>
+</section>
+<section id="conclusão" class="level1">
+<h1>Conclusão</h1>
+<p>Ao longo deste post, discutimos sobre o conceito de intervalo de confiança, apresentando sua definição, interpretação e exemplos. Abordamos o método da quantidade pivotal, definindo o que é, de fato, uma quantidade pivotal e construindo alguns intervalos de confiança para amostras aleatórias da distribuição normal, apresentando diversos conceitos e resultados importantes dentro da Estatística ao longo do processo. É importante destacar que encontrar uma quantidade pivotal pode não ser fácil, ou até mesmo impossível no caso de certas distribuições de probabilidade discretas. Quando isso acontece, precisamos recorrer a formas alternativas de se construir intervalos de confiança, como utilizar intervalos assintóticos, por exemplo. Recomendamos ao leitor que procure mais informações sobre esses métodos alternativos caso seja de interesse. De qualquer forma, esperamos que as definições e os exemplos aqui apresentados tenham ficado claros, de forma com que o leitor tenha conseguido adquirir algum conhecimento sobre a temática em questão. Para comentários, sugestões e colaborações científicas, entre em contato conosco através do email <a href="mailto:observatorioobstetricobr@gmail.com" class="email">observatorioobstetricobr@gmail.com</a>, ou por meio do nosso <a href="https://twitter.com/observatorioobr">Twitter</a> ou <a href="https://www.instagram.com/observatorioobr/">Instagram</a>.</p>
+</section>
+<section id="referências" class="level1">
+<h1>Referências</h1>
+<p>MOOD, Alexander M; GRAYBILL, Franklin A; BOES, Duane C. <strong>Introduction to the theory of statistics</strong>. 3.ed. McGraw-Hill Education, 1974.</p>
+<p>DEGROOT, Morris H; Schervish, Mark J. <strong>Probability and Statistics</strong>. 4.ed. Addison Wesley Longman, 2011.</p>
+<p>MAGALHÃES, Marcos N. <strong>Noções de Probabilidade e Estatística</strong>. 7.ed. Edusp, 2007.</p>
+
+
+
+</section>
+
+<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
+<div class="list quarto-listing-default">
+
+</div>
+<div class="listing-no-matching d-none">
+No matching items
+</div>
+</div><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{sant'ana herzog2022,
+  author = {Sant’Ana Herzog, Rafael},
+  title = {Intervalos de Confiança},
+  date = {2022-03-15},
+  url = {https://rafaherzog.github.io/rafasantanah/posts/2022-03-15-funcao-de-verossimilhanca/},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-sant'ana herzog2022" class="csl-entry quarto-appendix-citeas" role="listitem">
+Sant’Ana Herzog, Rafael. 2022. <span>“Intervalos de Confiança.”</span>
+March 15, 2022. <a href="https://rafaherzog.github.io/rafasantanah/posts/2022-03-15-funcao-de-verossimilhanca/">https://rafaherzog.github.io/rafasantanah/posts/2022-03-15-funcao-de-verossimilhanca/</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

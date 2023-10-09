@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.353">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Rafael Sant’Ana Herzog">
+<meta name="dcterms.date" content="2022-03-15">
+<meta name="description" content="Entendendo o conceito e exemplificando a sua utilização">
+
+<title>Rafael Sant’Ana Herzog - Função de verossimilhança</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-listing/list.min.js"></script>
+<script src="../../site_libs/quarto-listing/quarto-listing.js"></script>
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script>
+
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-listing .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: [{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      
+      searchColumns: [],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  </script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Rafael Sant’Ana Herzog</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html" rel="" target="">
+ <span class="menu-text">Sobre mim</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../posts.html" rel="" target="">
+ <span class="menu-text">Meus posts</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools ms-auto">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-page-left">
+      <h1 class="title">Função de Verossimilhança</h1>
+                  <div>
+        <div class="description">
+          Entendendo o conceito e exemplificando a sua utilização
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">estatística</div>
+                <div class="quarto-category">R</div>
+              </div>
+                  </div>
+  </div>
+    
+  <div class="quarto-title-meta-author">
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-heading">Affiliation</div>
+    
+      <div class="quarto-title-meta-contents">
+      <p class="author"><a href="https://rafaherzog.github.io/rafasantanah/">Rafael Sant’Ana Herzog</a> </p>
+    </div>
+      <div class="quarto-title-meta-contents">
+          <p class="affiliation">
+              Estudante de graduação em Estatística na UFES
+            </p>
+        </div>
+      </div>
+
+  <div class="quarto-title-meta">
+
+        
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">March 15, 2022</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introdução" id="toc-introdução" class="nav-link active" data-scroll-target="#introdução">Introdução</a></li>
+  <li><a href="#entendendo-a-verossimilhança" id="toc-entendendo-a-verossimilhança" class="nav-link" data-scroll-target="#entendendo-a-verossimilhança">Entendendo a verossimilhança</a></li>
+  <li><a href="#estimação-de-parâmetros-pelo-método-da-máxima-verossimilhança" id="toc-estimação-de-parâmetros-pelo-método-da-máxima-verossimilhança" class="nav-link" data-scroll-target="#estimação-de-parâmetros-pelo-método-da-máxima-verossimilhança">Estimação de parâmetros pelo método da máxima verossimilhança</a></li>
+  <li><a href="#conclusão" id="toc-conclusão" class="nav-link" data-scroll-target="#conclusão">Conclusão</a></li>
+  <li><a href="#referências" id="toc-referências" class="nav-link" data-scroll-target="#referências">Referências</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
+
+
+
+
+<section id="introdução" class="level1">
+<h1>Introdução</h1>
+<p>Neste post, iremos conhecer sobre o conceito de função de verossimilhança, um tema de extrema importância dentro inferência estatística. Discutiremos sobre algumas de suas utilizações e realizaremos exemplos práticos e computacionais que nos permitam absorver melhor as ideias que aqui forem abordadas. Para começo de conversa, quando estudamos a Teoria das Probabilidades, nos habituamos a ter um conhecimento prévio sobre a distribuição de probabilidade que uma determinada variável aleatória segue, podendo, assim, obter respostas para os possíveis eventos que podem vir a acontecer em relação a essa variável. Em situações cotidianas, entretanto, pode ser extremamente difícil de se obter precisamente as distribuições de probabilidade de certas variáveis aleatórias. Na maior parte dos casos, o melhor que podemos fazer é obter uma amostra da população que queremos estudar, e, a partir dessa amostra, inferenciar sobre a população em questão. Temos aqui uma mudança de perspectiva: se antes estávamos interessados em calcular a probabilidade de uma variável aleatória assumir um certo valor, dado que ela segue uma certa distribuição de probabilidade, agora queremos estudar sobre como deve ser essa distribuição de probabilidade, dado que observamos certos valores dessa variável aleatória na amostra.</p>
+<p>Assim, comecemos por uma definição: considere <span class="math inline">\(f_{\mathbf{X}}(\mathbf{x}|\theta)\)</span> como sendo a função densidade conjunta (no caso contínuo) ou a função de probabilidade conjunta (no caso discreto) de <span class="math inline">\(n\)</span> variáveis aleatórias. Definimos a função de verossimilhança <span class="math inline">\(L(\theta|\mathbf{x})\)</span> como sendo a função densidade (ou de probabilidade) conjunta dessas <span class="math inline">\(n\)</span> variáveis aleatórias vista como função de <span class="math inline">\(\theta\)</span>, ou seja, considerando como fixos os valores de <span class="math inline">\(X_1,\;X_2,\;...,\;X_n\)</span> e variando o valor do parâmetro <span class="math inline">\(\theta\)</span> (ou valores, caso <span class="math inline">\(\theta\)</span> seja um vetor de parâmetros). Em outras palavras, temos que</p>
+<p><span class="math display">\[
+L(\theta|\mathbf{x}) = f_{\mathbf{X}}(\mathbf{x}|\theta)
+\]</span></p>
+<p>Apesar de, à primeira vista, a definição acima parecer ser simplesmente uma diferença de notação, a função de verossimilhança e a função densidade (ou de probabilidade) conjunta apresentam distinções importantíssimas. Em primeiro lugar, algo a se notar é que a função de verossimilhança, por ser uma função de <span class="math inline">\(\theta\)</span>, pode ser contínua em um certo intervalo mesmo que <span class="math inline">\(f_{\mathbf{X}}(\mathbf{x}|\theta)\)</span> seja uma função de probabilidade conjunta (ou seja, mesmo que as variáveis aleatórias que fazem parte da amostra sejam discretas). Basta que <span class="math inline">\(\theta\)</span> assuma valores de forma contínua em um dado intervalo. Além disso, é preciso deixar claro que a função de verossimilhança <strong>não</strong> é uma função densidade (ou de probabilidade) em relação a <span class="math inline">\(\theta\)</span>, pois sua integral (ou soma) em todo o espaço paramétrico (conjunto de todos os possíveis valores que o parâmetro pode assumir) não necessariamente é igual a 1, propriedade que deve ser cumprida para que uma função seja considerada uma função densidade de probabilidade ou uma função de probabilidade. Dessa forma, o valor obtido através da função de verossimilhança não pode ser considerado como uma densidade de probabilidade ou uma probabilidade em relação a <span class="math inline">\(\theta\)</span>. De fato, chamamos, pásmem, de verossimilhança o valor obtido por meio dessa função. Mas, afinal… o que seria, então, essa verossimilhança?</p>
+</section>
+<section id="entendendo-a-verossimilhança" class="level1">
+<h1>Entendendo a verossimilhança</h1>
+<p>Para explicar o que é, de fato, a verossimilhança, precisamos definir dois cenários diferentes. Para o primeiro caso, o caso discreto, considere uma amostra aleatória <span class="math inline">\((X_1,\;X_2,\;X_3,\;X_4)\)</span> na qual todas as variáveis seguem uma distribuição <span class="math inline">\(Bernoulli(\theta)\)</span>, onde <span class="math inline">\(\theta\)</span> é a probabilidade de sucesso, variando no intervalo <span class="math inline">\([0,\;1]\)</span>. Suponha que os valores observados de <span class="math inline">\((X_1,\;X_2,\;X_3,\;X_4)\)</span> tenham sido <span class="math inline">\(x_1 = 0,\;x_2 = 1,\;x_3 = 1\)</span> e <span class="math inline">\(x_4 = 1\)</span>, e que queremos decidir entre duas hipóteses: a hipótese <span class="math inline">\(A\)</span>, na qual o verdadeiro valor do parâmetro seria <span class="math inline">\(\theta = 0,5\)</span>, e a hipótese <span class="math inline">\(B\)</span>, na qual o valor de <span class="math inline">\(\theta\)</span> seria 0,8. Por se tratar de uma amostra aleatória, consideramos que todas as variáveis são independentes e identicamente distribuídas (i.i.d.). Dessa forma, a função de probabilidade conjunta pode ser escrita como sendo o produtório das funções de probabilidade marginais (é de extrema importância lembrar que essa afirmação é válida se, e somente se, as variáveis aleatórias em questão são independentes). Assim, para <span class="math inline">\(x \in \{0,\;1\}\)</span>, temos:</p>
+<p><span class="math display">\[
+\begin{align}
+f(\mathbf{x}|\theta) &amp;= \prod_{i = 1}^4 \theta^{x_i} (1 - \theta)^{1 - x_i} \\
+                     &amp;= \theta^{\sum_{i = 1}^4 x_i}(1 - \theta)^{4 - \sum_{i = 1}^4 x_i}
+\end{align}
+\]</span></p>
+<p>Sendo <span class="math inline">\(\sum_{i = 1}^4 x_i = 0 + 1 + 1 + 1 = 3\)</span>,</p>
+<p><span class="math display">\[
+\begin{align}
+f(\mathbf{x}|\theta) &amp;= \theta^{3}(1 - \theta)^{4 - 3} \\
+                     &amp;= \theta^{3}(1 - \theta)
+\end{align}
+\]</span></p>
+<p>Assim, <span class="math inline">\(L(\theta|\mathbf{x}) = \theta^{3}(1 - \theta)\)</span>, para <span class="math inline">\(0 \leqslant \theta \leqslant 1\)</span>. Note que, como <span class="math inline">\(f_{\mathbf{X}}(\mathbf{x}|\theta)\)</span> é uma função de probabilidade conjunta e, portanto, está limitada ao intervalo <span class="math inline">\([0,\;1]\)</span>, a função de verossimilhança também estará limitada a esse intervalo. Antes de continuarmos a resolução do exemplo, podemos ilustrar que, como dito na seção anterior, a integral da função de verossimilhança em todo o seu domínio não necessariamente deve ser igual a 1. Observe os cálculos abaixo.</p>
+<p><span class="math display">\[
+\begin{align}
+\int_0^1 \theta^3(1 - \theta) d\theta = \int_0^1 \theta^3 - \theta^4 = \left(\frac{\theta^4}{4} - \frac{\theta^5}{5}\right) \Bigg\rvert_0^1 = \frac{1}{4} - \frac{1}{5} = \frac{1}{20}
+\end{align}
+\]</span></p>
+<p>Dessa forma, reforçando, <span class="math inline">\(L(\theta|\mathbf{x})\)</span> não pode ser considerada uma função densidade de probabilidade em relação a <span class="math inline">\(\theta\)</span>. Voltando ao exemplo, queríamos decidir entre as hipóteses <span class="math inline">\(A\)</span>, na qual <span class="math inline">\(\theta = 0,5\)</span>, e <span class="math inline">\(B\)</span>, na qual <span class="math inline">\(\theta = 0,8\)</span>. No primeiro caso, o valor da verossimilhança seria dado por:</p>
+<p><span class="math display">\[
+\begin{align}
+L(0,5|\mathbf{x}) &amp; = 0,5^3(1 - 0,5) \\
+                  &amp; = 0,125(0,5) \\
+                  &amp; = 0,0625
+\end{align}
+\]</span></p>
+<p>Já no segundo caso,</p>
+<p><span class="math display">\[
+\begin{align}
+L(0,8|\mathbf{x}) &amp; = 0,8^3(1 - 0,8) \\
+                  &amp; = 0,512(0,2) \\
+                  &amp; = 0,1024
+\end{align}
+\]</span></p>
+<p>Quanto à interpretação dos resultados, não podemos dizer, de forma alguma, que a verossimilhança indica que a probabilidade do verdadeiro valor de <span class="math inline">\(\theta\)</span> ser 0,5 é de 0,0625, ou que a probabilidade de <span class="math inline">\(\theta\)</span> ser 0,8 é de 0,1024. O valor da verossimilhança, quando <span class="math inline">\(\mathbf{X}\)</span> é discreto, deve ser interpretado como sendo <strong>a probabilidade de observarmos os valores da amostra caso o verdadeiro valor do parâmetro seja o valor testado</strong>. Assim, a verossimilhança seria uma probabilidade <strong>em relação a X</strong>, e não em relação a <span class="math inline">\(\theta\)</span>. Com isso, como 0,1024 &gt; 0,0625, concluímos que a amostra em questão tem uma maior chance de ser observada quando <span class="math inline">\(\theta = 0,8\)</span>, e, portanto, a hipótese <span class="math inline">\(B\)</span> é <em>mais verossímil</em> do que a hipótese <span class="math inline">\(A\)</span>. Podemos ainda definir a <strong>razão de verossimilhança</strong>, dada por <span class="math display">\[
+\frac{L(B|\mathbf{x})}{L(A|\mathbf{x})},
+\]</span></p>
+<p>como sendo uma forma de medir a <strong>força de evidência</strong> em favor da hipótese <span class="math inline">\(B\)</span> sobre a hipótese <span class="math inline">\(A\)</span>. Nesse exemplo, temos que</p>
+<p><span class="math display">\[
+\frac{L(B|\mathbf{x})}{L(A|\mathbf{x})} = \frac{0,1024}{0,0625} = 1,6384.
+\]</span> Assim, podemos dizer que a observação da amostra obtida é evidência de que a hipótese <span class="math inline">\(B\)</span> é aproximadamente 1,64 vezes mais verossímil do que a hipótese <span class="math inline">\(A\)</span>.</p>
+<p>Analogamente, caso <span class="math inline">\((X_1,\;X_2,\;...,\;X_n)\)</span> fosse uma amostra de variáveis aleatórias que seguem uma distribuição contínua, teríamos que <span class="math inline">\(f_\mathbf{X}(\mathbf{x}|\theta)\)</span> seria uma função densidade conjunta, e que, por estar definida em <span class="math inline">\([0, \infty)\)</span>, assim o estaria a função de verossimilhança. O valor da verossimilhança, nesse cenário, indicaria a <strong>densidade de probabilidade da amostra observada caso o verdadeiro valor de</strong> <span class="math inline">\(\theta\)</span> fosse o valor testado. Novamente, a densidade de probabilidade é <strong>em relação a X</strong>, e não em relação a <span class="math inline">\(\theta\)</span>. De qualquer forma, encontrar o valor de <span class="math inline">\(\theta\)</span> que maximiza uma função de verossimilhança aparenta ser um bom caminho para estimar o verdadeiro valor do parâmetro de uma distribuição de probabilidade. E é exatamente sobre isso que discutiremos na próxima seção.</p>
+</section>
+<section id="estimação-de-parâmetros-pelo-método-da-máxima-verossimilhança" class="level1">
+<h1>Estimação de parâmetros pelo método da máxima verossimilhança</h1>
+<p>No ramo da inferência estatística, um dos métodos mais conhecidos e dominantes de se estimar um parâmetro de uma certa distribuição de probabilidade, dado os valores observados em uma amostra, é o chamado <strong>método da máxima verossimilhança</strong>. A ideia principal desse método consiste em maximizar o valor da função de verossimilhança, para que assim a probabilidade de a amostra observada ocorrer seja a maior possível. Dessa forma, sendo <span class="math inline">\(L(\theta|\mathbf{x})\)</span> a função de verossimilhança das variáveis aleatórias <span class="math inline">\(X_1,\;X_2,\;...,\;X_n\)</span>, chamamos de <strong>estimador de máxima verossimilhança</strong> e denotamos por <span class="math inline">\(\hat{\theta}\)</span>, sendo <span class="math inline">\(\hat{\theta}(X_1,\;X_2,\;...,\;X_n)\)</span> (ou seja, uma função das variáveis aleatórias), o valor de <span class="math inline">\(\theta\)</span> que, entre todo o espaço paramétrico, maximiza <span class="math inline">\(L(\theta|\mathbf{x})\)</span>. Quando substituídos os valores observados de <span class="math inline">\(X_1,\;X_2,\;...,\;X_n\)</span>, obtemos a chamada <strong>estimativa de máxima verossimilhança</strong> para <span class="math inline">\(\theta\)</span>.</p>
+<p>Para maximizar a função de verossimilhança, buscaremos auxílio no Cálculo. Respeitadas algumas condições, temos que o estimador de máxima verossimilhança é a solução da equação</p>
+<p><span class="math display">\[
+\frac{dL(\theta|\mathbf{x})}{d\theta} = 0.
+\]</span> Para que as explicações acima fiquem mais claras, passemos para um exemplo. Considere que <span class="math inline">\((X_1,\;X_2,\;...,\,X_n)\)</span> é uma amostra aleatória de uma distribuição <span class="math inline">\(Bernoulli(\theta)\)</span>. De forma semelhante ao que vimos na seção anterior, podemos escrever a função de probabilidade conjunta dessas variáveis, para <span class="math inline">\(x \in \{0,\;1\}\)</span> como sendo</p>
+<p><span class="math display">\[
+\begin{align}
+f_\mathbf{X}(\mathbf{x}|\theta) &amp;= \prod_{i = 1}^n \theta^{x_i}(1 - \theta)^{1 - x_i} \\
+                                &amp;= \theta^{\sum_{i = 1}^n x_i}(1 - \theta)^{n - \sum_{i = 1}^n x_i}
+\end{align}
+\]</span> Logo, <span class="math inline">\(L(\theta|\mathbf{x}) = \theta^{\sum_{i = 1}^n x_i}(1 - \theta)^{n - \sum_{i = 1}^n x_i}\)</span> para <span class="math inline">\(0 \leqslant \theta \leqslant 1\)</span>. Para encontrarmos o estimador de máxima verossimilhança de <span class="math inline">\(\theta\)</span>, precisamos derivar a função <span class="math inline">\(L(\theta|\mathbf{x})\)</span> em relação a <span class="math inline">\(\theta\)</span> e igualar o resultado a zero. Note, entretanto, que na maioria dos casos é consideravelmente mais fácil encontrar a derivada do logaritmo da função de verossimilhança do que a derivada da função de verossimilhança propriamente dita. E como a função logarítmica é estritamente crescente, maximizar a função de verossimilhança é o equivalente a maximizar a função de <strong>log-verossimilhança</strong>. Para não causar maiores confusões, denotaremos essa última por <span class="math inline">\(l(\theta|\mathbf{x})\)</span>, sendo <span class="math inline">\(l(\theta|\mathbf{x}) = \log\left[L(\theta|\mathbf{x})\right]\)</span>. Assim, temos:</p>
+<p><span class="math display">\[
+\begin{align}
+l(\theta|\mathbf{x}) &amp;= \log\left[\theta^{\sum_{i = 1}^n x_i}(1 - \theta)^{n - \sum_{i = 1}^n x_i}\right] \\
+                     &amp;= \log\left(\theta^{\sum_{i = 1}^n x_i}\right) + \log\left[(1 - \theta)^{n - \sum_{i = 1}^n x_i}\right] \\
+                     &amp;= \sum_{i = 1}^n x_i\log(\theta) + \left(n - \sum_{i = 1}^n x_i\right)\log(1 - \theta)
+\end{align}
+\]</span> Calculando a derivada em relação a <span class="math inline">\(\theta\)</span>,</p>
+<p><span class="math display">\[
+\begin{align}
+\frac{d\;l(\theta|\mathbf{x})}{d\theta} &amp;= \frac{\sum_{i = 1}^n x_i}{\theta} - \frac{n - \sum_{i = 1}^n x_i}{1 - \theta} \\
+                                        &amp;= \frac{(1 - \theta)\sum_{i = 1}^n x_i - \theta\left(n - \sum_{i = 1}^n x_i\right)}{\theta(1 - \theta)} \\
+                                        &amp;= \frac{\sum_{i = 1}^n x_i - \theta\sum_{i = 1}^n x_i - n\theta + \theta\sum_{i = 1}^n x_i}{\theta(1 - \theta)} \\
+                                        &amp;= \frac{\sum_{i = 1}^n x_i - n\theta}{\theta(1 - \theta)}
+\end{align}
+\]</span> O resultado acima - a derivada da função de log-verossimilhança - recebe um nome especial: a chamamos de <strong>função escore</strong>, denotada por <span class="math inline">\(s(\theta)\)</span>. Igualando-a a zero, temos:</p>
+<p><span class="math display">\[
+\begin{align}
+\frac{\sum_{i = 1}^n x_i - n\theta}{\theta(1 - \theta)} = 0 \quad &amp; \rightarrow\quad \sum_{i = 1}^n x_i - n\theta = 0 \\
+                                                           &amp; \rightarrow\quad \hat{\theta} = \frac{\sum_{i = 1}^n x_i}{n}
+\end{align}
+\]</span></p>
+<p>Logo, o estimador de máxima verossimilhança para <span class="math inline">\(\theta\)</span> de uma amostra aleatória com distribuição <span class="math inline">\(Bernoulli(\theta)\)</span> é <span class="math inline">\(\hat{\theta} = \bar{X}\)</span>, ou seja, a média amostral. Aplicando esse resultado no exemplo discutido na seção anterior, no qual <span class="math inline">\(n = 4\)</span> e <span class="math inline">\(x_1 = 0,\;x_2 = 1,\;x_3 = 1\)</span> e <span class="math inline">\(x_4 = 1\)</span>, temos:</p>
+<p><span class="math display">\[
+\begin{align}
+\hat{\theta} = \frac{\sum_{i = 1}^4 x_i}{4} = \frac{0 + 1 + 1 + 1}{4} = \frac{3}{4} = 0,75
+\end{align}
+\]</span> Assim, a estimativa de máxima verossimilhança para <span class="math inline">\(\theta\)</span> é de 0,75. Ou seja, a maior probabilidade de observarmos a amostra em questão ocorre quando o valor do parâmetro populacional é 0,75. Nesse ponto, a verossimilhança é dada por</p>
+<p><span class="math display">\[
+\begin{align}
+L(0,75|\mathbf{x}) &amp; = (0,75)^3(1 - 0,75) \\
+                   &amp; = 0,421875(0,25) \\
+                   &amp; = 0,10546875
+\end{align}
+\]</span> Note que, como esperado, o valor acima é maior que o valor encontrado para a verossimilhança quando <span class="math inline">\(\theta = 0,8\)</span>, calculado anteriormente. Assim, podemos considerar que uma hipótese <span class="math inline">\(C\)</span>, que diz que o verdadeiro valor do parâmetro é 0,75, é a hipótese <em>mais verossímil</em> para explicar o comportamento de <span class="math inline">\(\theta\)</span>. Muito importante: isso não significa que o verdadeiro valor do parâmetro é, de fato, 0,75. Estamos apenas adotando esse valor como uma <strong>estimativa</strong> desse parâmetro, uma vez que, pelo método da máxima verossimilhança, ele é o valor que melhor explica a amostra obtida.</p>
+<p>Para concluir, podemos utilizar o R para criar os gráficos das funções de verossimilhança e escore do exemplo acima, para assim termos uma melhor visualização dos resultados obtidos. Definindo as funções, temos:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>vero <span class="ot">&lt;-</span> <span class="cf">function</span>(theta) theta<span class="sc">^</span><span class="dv">3</span><span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>theta)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>escore <span class="ot">&lt;-</span> <span class="cf">function</span>(theta) (<span class="dv">3</span> <span class="sc">-</span> <span class="dv">4</span><span class="sc">*</span>theta)<span class="sc">/</span>(theta<span class="sc">*</span>(<span class="dv">1</span> <span class="sc">-</span> theta))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Para plotarmos os gráficos, utilizaremos a função <tt>curve</tt>, do pacote básico <tt>graphics</tt>, a qual desenhará uma curva para a função especificada em um dado intervalo. Para ambas as funções que queremos plotar, como <span class="math inline">\(0 \leqslant \theta \leqslant 1\)</span>, não precisaremos especificar o intervalo que <tt>curve</tt> utilizará, uma vez que <span class="math inline">\([0,\;1]\)</span> é o intervalo padrão dessa função. Com a função <tt>abline</tt>, traçaremos linhas verticais e horizontais nas coordenadas especificadas, utilizando o argumento <tt>lty</tt> para especificar se a linha deve ser completa (<tt>lty = 1</tt>) ou tracejada (<tt>lty = 2</tt>). Com a função <tt>points</tt>, adicionaremos ao gráfico pontos nas coordenadas especificadas, utilizando o argumento <tt>pch</tt> para definir seu formato. Por fim, com a função <tt>text</tt>, adicionaremos textos ao gráfico, nas coordenadas escolhidas, por meio do argumento <tt>labels</tt>. Todas as funções aqui utilizadas pertencem ao pacote básico <tt>graphics</tt>. Para a função de verossimilhança, temos:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">curve</span>(<span class="at">expr =</span> vero, </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">main =</span> <span class="st">"Gráfico da função de verossimilhança"</span>, </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">xlab =</span> <span class="st">"Theta"</span>, <span class="at">ylab =</span> <span class="st">"Verossimilhança"</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">col =</span> <span class="st">"#32A0FF"</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.12</span>))</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fl">0.75</span>, <span class="at">h =</span> <span class="fl">0.10546875</span>, <span class="at">lty =</span> <span class="dv">2</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="at">x =</span> <span class="fl">0.75</span>, <span class="at">y =</span> <span class="fl">0.10546875</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">pch =</span> <span class="dv">20</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x =</span> <span class="fl">0.86</span>, <span class="at">y =</span> <span class="fl">0.11</span>, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"(0.75, 0.10546875)"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Observe que, de fato, a função de verossimilhança em questão possui um ponto de máximo absoluto em <span class="math inline">\(\theta = 0,75\)</span>. Já quanto à função escore,</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">curve</span>(<span class="at">expr =</span> escore,</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">main =</span> <span class="st">"Gráfico da função escore"</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">xlab =</span> <span class="st">"Theta"</span>, <span class="at">ylab =</span> <span class="st">"Escore"</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">col =</span> <span class="st">"#32A0FF"</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.75</span>), <span class="at">h =</span> <span class="dv">0</span>, <span class="at">lty =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="at">x =</span> <span class="fl">0.75</span>, <span class="at">y =</span> <span class="dv">0</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">pch =</span> <span class="dv">20</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="at">x =</span> <span class="fl">0.805</span>, <span class="at">y =</span> <span class="dv">15</span>, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"(0.75, 0)"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Note que, como esperado, o gráfico da função escore intercepta o eixo <span class="math inline">\(x\)</span> apenas no ponto <span class="math inline">\(\theta = 0,75\)</span>, o qual, como visto acima, é um ponto de máximo da função de verossimilhança. Dessa forma, podemos observar que os cálculos feitos ao longo do post estão de acordo com as representações visuais das funções envolvidas.</p>
+</section>
+<section id="conclusão" class="level1">
+<h1>Conclusão</h1>
+<p>Ao longo desse post, discutimos sobre os conceitos de verossimilhança e função de verossimilhança, demonstrando algumas de suas utilizações dentro da Estatística. Algo que aqui não foi discutido, muito por conta da falta de conhecimento do autor sobre o assunto até o presente momento, é o papel da função de verossimilhança dentro da inferência Bayesiana. Mas isso é papo para outra hora. De qualquer forma, esperamos que as definições e os exemplos aqui apresentados tenham ficado claros, de forma que o leitor tenha conseguido adquirir algum conhecimento sobre essa temática. Para comentários, sugestões e colaborações científicas, entre em contato conosco através do email <a href="mailto:observatorioobstetricobr@gmail.com" class="email">observatorioobstetricobr@gmail.com</a>.</p>
+</section>
+<section id="referências" class="level1">
+<h1>Referências</h1>
+<p><a href="https://ruccs.rutgers.edu/images/personal-charles-r-gallistel/publications/2015-APS-Bayes-for-Beginners-1-Probability-and-Likelihood---Association-for-Psychological-Science.pdf" class="uri">https://ruccs.rutgers.edu/images/personal-charles-r-gallistel/publications/2015-APS-Bayes-for-Beginners-1-Probability-and-Likelihood---Association-for-Psychological-Science.pdf</a></p>
+<p><a href="https://fsbmat-ufv.github.io/blog_posts/14-08-2019/post1" class="uri">https://fsbmat-ufv.github.io/blog_posts/14-08-2019/post1</a></p>
+<p><a href="https://en.wikipedia.org/wiki/Likelihood_function" class="uri">https://en.wikipedia.org/wiki/Likelihood_function</a></p>
+<p><a href="https://online.stat.psu.edu/stat415/lesson/1/1.2" class="uri">https://online.stat.psu.edu/stat415/lesson/1/1.2</a></p>
+<p>MOOD, Alexander McFarlane. Introduction to the theory of statistics. 3. ed.&nbsp;EUA: McGraw-Hill Education, 1974. 480 p.</p>
+
+
+
+</section>
+
+<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
+<div class="list quarto-listing-default">
+
+</div>
+<div class="listing-no-matching d-none">
+No matching items
+</div>
+</div><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{sant'ana herzog2022,
+  author = {Sant’Ana Herzog, Rafael},
+  title = {Função de Verossimilhança},
+  date = {2022-03-15},
+  url = {https://rafaherzog.github.io/rafasantanah/posts/2022-03-15-funcao-de-verossimilhanca/},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-sant'ana herzog2022" class="csl-entry quarto-appendix-citeas" role="listitem">
+Sant’Ana Herzog, Rafael. 2022. <span>“Função de Verossimilhança.”</span>
+March 15, 2022. <a href="https://rafaherzog.github.io/rafasantanah/posts/2022-03-15-funcao-de-verossimilhanca/">https://rafaherzog.github.io/rafasantanah/posts/2022-03-15-funcao-de-verossimilhanca/</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

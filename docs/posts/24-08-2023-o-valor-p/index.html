@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.353">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Rafael Sant’Ana Herzog">
+<meta name="dcterms.date" content="2023-08-24">
+<meta name="description" content="Entendendo o conceito, a interpretação e a maneira correta de se utilizar o valor-p em testes de hipóteses">
+
+<title>Rafael Sant’Ana Herzog - O valor-p</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-listing/list.min.js"></script>
+<script src="../../site_libs/quarto-listing/quarto-listing.js"></script>
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+<script>
+
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-listing .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: [{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-file-modified-sort'] }],
+      
+      searchColumns: [],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-listing'] = new List('listing-listing', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  </script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Rafael Sant’Ana Herzog</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html" rel="" target="">
+ <span class="menu-text">Sobre mim</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../posts.html" rel="" target="">
+ <span class="menu-text">Meus posts</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools ms-auto">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-page-left">
+      <h1 class="title">O valor-<em>p</em></h1>
+                  <div>
+        <div class="description">
+          Entendendo o conceito, a interpretação e a maneira correta de se utilizar o valor-<em>p</em> em testes de hipóteses
+        </div>
+      </div>
+                          <div class="quarto-categories">
+                <div class="quarto-category">estatística</div>
+                <div class="quarto-category">R</div>
+              </div>
+                  </div>
+  </div>
+    
+  <div class="quarto-title-meta-author">
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-heading">Affiliation</div>
+    
+      <div class="quarto-title-meta-contents">
+      <p class="author"><a href="https://rafaherzog.github.io/rafasantanah/">Rafael Sant’Ana Herzog</a> </p>
+    </div>
+      <div class="quarto-title-meta-contents">
+          <p class="affiliation">
+              Estudante de graduação em Estatística na UFES
+            </p>
+        </div>
+      </div>
+
+  <div class="quarto-title-meta">
+
+        
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">August 24, 2023</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#introdução" id="toc-introdução" class="nav-link active" data-scroll-target="#introdução">Introdução</a></li>
+  <li><a href="#a-origem-do-valor-p" id="toc-a-origem-do-valor-p" class="nav-link" data-scroll-target="#a-origem-do-valor-p">A origem do valor-<em>p</em></a></li>
+  <li><a href="#a-utilização-do-valor-p-em-testes-de-hipóteses" id="toc-a-utilização-do-valor-p-em-testes-de-hipóteses" class="nav-link" data-scroll-target="#a-utilização-do-valor-p-em-testes-de-hipóteses">A utilização do valor-<em>p</em> em testes de hipóteses</a></li>
+  <li><a href="#considerações-a-respeito-da-utilização-do-valor-p" id="toc-considerações-a-respeito-da-utilização-do-valor-p" class="nav-link" data-scroll-target="#considerações-a-respeito-da-utilização-do-valor-p">Considerações a respeito da utilização do valor-<em>p</em></a></li>
+  <li><a href="#referências" id="toc-referências" class="nav-link" data-scroll-target="#referências">Referências</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content quarto-banner-title-block column-page-left" id="quarto-document-content">
+
+
+
+
+<section id="introdução" class="level3">
+<h3 class="anchored" data-anchor-id="introdução">Introdução</h3>
+<p>Testes de hipóteses estão, sem dúvida alguma, entre os métodos estatísticos mais proeminentes dentro da pesquisa científica. A possibilidade de se testar uma suposição a respeito do comportamento de uma ou mais variáveis aleatórias a partir de uma amostra de observações dessas variáveis abriu portas para a utilização da Estatística nos mais diversos campos da ciência, desde as áreas sociais, comportamentais e médicas, à área física, química e muitas outras. Ao longo deste post, entretanto, não trataremos especificamente de testes de hipóteses, mas sim de um elemento intrínseco a essas ferramentas: o <strong>valor-p</strong>. O valor-<em>p</em> (também chamado de <em>p</em>-valor ou valor de <em>p</em>) é uma probabilidade relacionada à amostra observada que fornece uma dimensão da “compatibilidade” dessa amostra com a hipótese nula que está sendo testada, nos dando, assim, uma base para a tomada de decisões. Ao longo desta publicação, trataremos da origem dessa ferramenta, de sua definição formal, dos aparentes benefícios de sua utilização - e dos malefícios de sua má-utilização - e discutiremos maneiras de se contornar suas limitações, que estão sendo cada vez mais evidenciadas dentro do meio científico. É importante dizer que este texto irá assumir que o leitor já possui conhecimentos prévios dos conceitos básicos relacionados à teoria dos testes de hipóteses. Assim, caso esse não seja o seu caso, ou caso deseje relembrar alguns desses conceitos, sugerimos a leitura do post a respeito de testes de hipóteses produzido pelo Observatório Obstétrico Brasileiro, disponível <a href="https://observatorioobstetricobr.org/livro-e-tutoriais/teste-de-hipoteses/">neste link</a>.</p>
+</section>
+<section id="a-origem-do-valor-p" class="level3">
+<h3 class="anchored" data-anchor-id="a-origem-do-valor-p">A origem do valor-<em>p</em></h3>
+<p>A origem do valor-<em>p</em> pode ser atribuída a Ronald Fisher, o famoso estatístico inglês considerado um dos pais da Estatística moderna. Em seu livro “Statistical Methods for Research Workers”, publicado em 1925, Fisher apresenta uma série de exemplos de experimentos em que calcula valores-<em>p</em> para o que chamava de <strong>testes de significância</strong>, um método de testagem de hipóteses desenvolvido por este autor que precede a teoria de testes de hipóteses desenvolvida por Jerzy Neyman e Egon Pearson, publicada em 1928 e difundida na grande maioria dos livros didáticos atuais. A ideia era utilizar a probabilidade fornecida pelo valor-<em>p</em> para se decidir sobre a <strong>significância</strong> dos resultados obtidos, ou seja, decidir se os dados poderiam ser utilizados, ou não, para se rejeitar a hipótese nula proposta, seja ela referente à igualdade entre os efeitos de tratamentos, à adequação de um conjunto de dados a uma certa distribuição de probabilidades ou à independência entre duas variáveis categóricas.</p>
+<p>A ideia por trás do valor-<em>p</em> é, de certa forma, simples (mas frequentemente mal entendida): ele representa a probabilidade de observarmos valores da estatística de teste tão extremos quanto o observado, sob a suposição de a hipótese nula (<span class="math inline">\(H_0\)</span>) ser verdadeira. Dessa forma, quanto menor o valor-<em>p</em>, mais incompatíveis são os dados observados com a hipótese nula formulada; assim, quando o valor-<em>p</em> é suficientemente pequeno, encaramos essa incompatibilidade como sendo uma evidência de que a hipótese nula não é aceitável e, portanto, deve ser rejeitada. É comum lermos e dizermos que um valor-<em>p</em> é <strong>significativo</strong> quando ele é baixo o suficiente para se rejeitar uma hipótese nula. O sentido original da palavra “significativo”, entretanto, foi se modificando com o passar do tempo, como explica David Salsburg em seu livro “Uma senhora toma chá”, publicado em 2002: quando a teoria por trás do valor-<em>p</em> estava sendo desenvolvida, ser “significativo” representava apenas que o cálculo significou ou mostrou alguma coisa. O sentido atual da palavra, por outro lado, remete a algo ser muito importante, e é nesse sentido que muito se fala, erroneamente, que um certo resultado foi significativo. Como veremos posteriormente, a utilização dos termos “significativo” e “não significativo” está sendo, nos anos recentes, um dos vários pontos de debate dentro da comunidade estatística, com muitos defendendo abandonar a utilização dessas expressões, por conta da conotação potencialmente enganosa e perigosa que elas podem carregar.</p>
+<p>Até este ponto, nos limitamos a dizer que decidimos rejeitar uma hipótese nula caso o valor-<em>p</em> obtido seja suficientemente pequeno. Ser “suficientemente pequeno” é, entretanto, outra definição problemática dentro da Estatística. É discutível se Fisher definiu que valores-<em>p</em> menores que 0,05 são “significativos” e devem levar à rejeição da hipótese nula, mas é fato que esse número passou a ser visto como um grande critério universal para a tomada de decisões estatísticas. Experimentos que falham em atingir esse valor são frequentemente descartados, enquanto aqueles que o atingem são tratados como os que realmente importam. A atribuição da definição desse critério padrão do valor-<em>p</em> a Fisher se deve, possivelmente, a uma afirmação feita por este autor em seu artigo “The Statistical Method in Psychical Research”, publicado em 1929, no qual Fisher diz que “é prática comum julgar um resultado significativo se ele é de tal magnitude que possa ser reproduzido por acaso não mais frequentemente que uma vez em 20 tentativas” e que “esse é um nível arbitrário, mas conveniente, de significância para o investigador prático”. Nesse mesmo artigo, Fisher diz, ainda, que “o teste de significância só informa o que ignorar, a saber, todos os experimentos nos quais resultados significativos não são obtidos” e que “o investigador deveria apenas afirmar que um fenômeno é experimentalmente demonstrável quando sabe como planejar um experimento de forma que raramente falhe em dar um resultado significativo”. Dessa forma, de acordo com o autor, “resultados significativos isolados, que ele não sabe como reproduzir, são deixados em suspenso para futura investigação”.</p>
+<p>Como podemos notar, Fisher considera que a significância de um resultado só está realmente demonstrada se a grande maioria de um conjunto de experimentos idênticos se mostra individualmente significante. Essa definição, entretanto, se perdeu ao longo do tempo, e definitivamente não é considerada na maior parte dos estudos e pesquisas científicas. Por outro lado, existe uma grande problemática na fala de que “o teste de significância só informa o que ignorar, a saber, todos os experimentos nos quais resultados significativos não são obtidos”, uma vez que falhar em obter a significância não é prova de que o efeito que se deseja mostrar não existe. Mas, ponhamos em pausa essa discussão para o presente momento - voltaremos a ela numa seção específica - e partamos para a apresentação de como incorporamos o valor-<em>p</em> à teoria de testes de hipóteses que estamos acostumados a conhecer.</p>
+</section>
+<section id="a-utilização-do-valor-p-em-testes-de-hipóteses" class="level3">
+<h3 class="anchored" data-anchor-id="a-utilização-do-valor-p-em-testes-de-hipóteses">A utilização do valor-<em>p</em> em testes de hipóteses</h3>
+<p>Quando temos o primeiro contato com a teoria relacionada a testes de hipóteses, é comum que, para decidirmos quanto à rejeição ou não de uma hipótese nula, sigamos o seguinte processo:</p>
+<ol type="1">
+<li>definimos a hipótese nula a ser testada, <span class="math inline">\(H_0\)</span>, bem como a hipótese alternativa, <span class="math inline">\(H_1\)</span>;</li>
+<li>definimos a estatística que será utilizada para se testar a hipótese nula, cuja distribuição de probabilidades assumindo <span class="math inline">\(H_0\)</span> como verdadeira deve ser conhecida;</li>
+<li>fixamos o nível de significância <span class="math inline">\(\alpha\)</span> do teste, ou seja, a probabilidade de rejeitarmos a hipótese nula quando ela é verdadeira;</li>
+<li>construímos, com base no nível de significância adotado e assumindo <span class="math inline">\(H_0\)</span> como verdadeira, a região crítica, que representa o conjunto de valores da estatística de teste que levariam à rejeição da hipótese nula caso fossem observados;</li>
+<li>calculamos, utilizando as observações obtidas em uma amostra, o valor da estatística de teste;</li>
+<li>caso o valor observado da estatística de teste não pertença à região crítica, não rejeitamos <span class="math inline">\(H_0\)</span>; caso contrário, a hipótese nula é rejeitada.</li>
+</ol>
+<p>Como podemos perceber, o procedimento padrão de um teste de hipóteses parte da fixação de um nível de significância <span class="math inline">\(\alpha\)</span>, sendo a construção da região crítica dependente desse valor. Assim, caso fosse de nosso interesse verificar se a hipótese nula seria rejeitada sob um valor diferente de <span class="math inline">\(\alpha\)</span>, teríamos de reconstruir a região de rejeição. Fazendo uso do valor-<em>p</em> para a tomada de decisões, por outro lado, a fixação do nível de significância de antemão e a construção da região crítica já não são mais necessárias: depois de calculado o valor da estatística de teste, podemos encontrar a probabilidade de observarmos valores dessa estatística tão extremos quanto o observado sob a suposição de <span class="math inline">\(H_0\)</span> ser verdadeira - ou seja, o valor-<em>p</em>-, rejeitando a hipótese nula caso essa probabilidade seja menor que um certo valor de <span class="math inline">\(\alpha\)</span>. É importante notar que, por mais que a fixação do nível de significância de antemão não seja estritamente necessária para a realização de um teste de hipóteses que utiliza o valor-<em>p</em>, é recomendado que o valor de <span class="math inline">\(\alpha\)</span> seja, sim, definido de forma prévia à realização do teste, para que o pesquisador não seja induzido a mudar seu critério de rejeição de acordo com os resultados obtidos.</p>
+<p>Para fixarmos os conceitos aqui discutidos, vejamos um exemplo simples. Suponha que, após 100 lançamentos de uma moeda, 22 caras tenham sido observadas, e que seja de nosso interesse verificar se essa moeda é honesta utilizando um nível de significância de 1%. Reescrevendo esse problema de maneira formal, seja <span class="math inline">\(X\)</span> a variável aleatória que conta o número de caras que ocorreram ao longo dos 100 lançamentos da moeda. Sabemos, então, que <span class="math inline">\(X\)</span> segue distribuição binomial com parâmetros <span class="math inline">\(n = 100\)</span> e <span class="math inline">\(p\)</span>, sendo <span class="math inline">\(p\)</span> - a probabilidade de se observar uma cara - um valor desconhecido. Como é de nosso desejo verificar se a moeda é honesta, e como sabemos que uma moeda honesta tem probabilidade 0,5 de resultar em cara ou coroa, queremos testar as seguintes hipóteses:</p>
+<p><span class="math display">\[H_0: p = 0,5 \quad \text{vs} \quad H_1: p &lt; 0,5.\]</span></p>
+<p>Note que, como observamos poucas caras na amostra, podemos suspeitar de que a probabilidade de se obter uma cara por meio dessa moeda seja menor que a probabilidade de 0,5 que esse evento teria caso a moeda fosse honesta e, por isso, definimos a hipótese alternativa de forma a obtermos um teste unilateral à esquerda. Dessa forma, caso rejeitássemos a hipótese nula, poderíamos dizer que teríamos evidências para acreditar que a probabilidade de se obter uma cara a partir da moeda em questão é menor que 0,5. Para a resolução deste problema, precisamos, primeiramente, definir a estatística de teste a ser utilizada. Como estamos tratando de uma proporção, utilizar o estimador da proporção amostral, dado por</p>
+<p><span class="math display">\[
+\hat{P} = \frac{X}{n},
+\]</span></p>
+<p>parece ser uma boa pedida, em especial porque conhecemos sua distribuição aproximada sob <span class="math inline">\(H_0\)</span>. Calculando, assim, o valor dessa estatística, sabendo que <span class="math inline">\(n = 100\)</span> e que o número observado de caras foi de <span class="math inline">\(x = 37\)</span>, obtemos</p>
+<p><span class="math display">\[\hat{p} = 0,37.\]</span></p>
+<p>Determinado o valor observado da estatística de teste, precisamos, então, calcular o valor-<em>p</em>. Como o tamanho da amostra é suficientemente grande, sabemos, como consequência do Teorema do Limite Central e de forma aproximada, que</p>
+<p><span class="math display">\[
+\hat{P} \sim N\left(p; \frac{p(1 - p)}{n}\right).
+\]</span></p>
+<p>Supondo <span class="math inline">\(H_0\)</span> verdadeira, ou seja, que <span class="math inline">\(p = 0,5\)</span>, a distribuição de <span class="math inline">\(\hat{P}\)</span> fica completamente especificada, a saber,</p>
+<p><span class="math display">\[
+\hat{P} \sim N\left(0,5; 0,0025\right).
+\]</span></p>
+<p>Dessa forma, como encontramos <span class="math inline">\(\hat{p} = 0,37\)</span>, podemos calcular, padronizando a variável aleatória <span class="math inline">\(\hat{P}\)</span>, a probabilidade de observarmos valores tão extremos quanto esse supondo que a moeda seja honesta, ou seja,</p>
+<p><span class="math display">\[
+\begin{align}
+P(\hat{P} \leq 0,37 | p = 0,5) &amp; = P\left(\frac{\hat{P} - 0,5}{\sqrt{0,0025}} \leq \frac{0,37 - 0,5}{\sqrt{0,0025}} \Bigg{|} p = 0,5 \right) \\
+                     &amp; = P\left(Z \leq \frac{-0,13}{0,05} \Bigg{|} p = 0,5 \right) \\
+                     &amp; = P(Z \leq -2,6 | p = 0,5) \\
+                     &amp; = 0,005.
+\end{align}
+\]</span> Como o valor-<em>p</em> obtido foi de 0,005, podemos dizer que, se a moeda fosse realmente honesta, a probabilidade de encontrarmos uma amostra de 100 lançamentos com 37% ou menos ocorrências de caras seria de 0,5%. Isso sugere que, ou estamos diante de uma amostra muito rara, que deve ocorrer 1 vez a cada 200 realizações do experimento, ou que a hipótese nula formulada não é aceitável. Como adotamos um nível de significância de 1%, e como o valor-<em>p</em> obtido foi menor que esse nível de significância, somos levados a decidir pela rejeição da hipótese nula. Dessa forma, temos evidências para acreditar que a moeda em questão não é honesta (ela, de fato, não era; o valor 37 foi gerado aleatoriamente a partir da distribuição binomial com <span class="math inline">\(p = 0,3\)</span>, utilizando a semente 42 e a função <em>rbinom()</em>, disponível no pacote <em>stats{}</em>, do R).</p>
+<p>Para finalizar esta seção, uma observação importante a se fazer é a respeito do cálculo do valor-<em>p</em> para testes de hipóteses bilaterais, ou seja, aqueles cuja hipótese alternativa é do tipo <span class="math inline">\(\theta \neq \theta_0\)</span>, sendo <span class="math inline">\(\theta\)</span> um parâmetro qualquer. Nesses casos, um possível procedimento é tomar o valor-<em>p</em> bilateral como sendo o dobro do valor-<em>p</em> unilateral. Quando a distribuição da estatística de teste sob <span class="math inline">\(H_0\)</span> é simétrica, como no caso da distribuição normal e da distribuição t de Student, esse procedimento é razoável. Em outras situações, pode ser preferível relatar o valor do valor-<em>p</em> unilateral e a direção segundo a qual a observação se afasta de <span class="math inline">\(H_0\)</span>. Para mais detalhes, sugerimos a leitura da seção referente ao valor-<em>p</em> dentro do livro “Estatística básica”, escrito por Bussab e Morettin e publicado em 2010.</p>
+</section>
+<section id="considerações-a-respeito-da-utilização-do-valor-p" class="level3">
+<h3 class="anchored" data-anchor-id="considerações-a-respeito-da-utilização-do-valor-p">Considerações a respeito da utilização do valor-<em>p</em></h3>
+<p>Em sua superfície, a utilização do valor-<em>p</em> fornece uma maneira padronizada e objetiva de se quantificar a evidência estatística, aparentando impedir que julgamentos subjetivos e outros tipos de vieses influenciem as conclusões do pesquisador (apesar de a própria escolha de um certo nível de significância, por exemplo, ser uma decisão subjetiva). Além disso, a praticidade oferecida pelo valor-<em>p</em> pesa positivamente para a continuidade de sua utilização, uma vez que, por se tratar aparentemente de um único número que resume toda uma análise, ele é de fácil comunicação e reporte. Por essas e outras razões, a utilização do valor-<em>p</em> se espalhou fortemente dentro do meio científico, tornando cada vez maior a quantidade de publicações que fazem mal uso dessa medida. Um dos erros mais comumente cometidos é referente à interpretação do significado do valor-<em>p</em>: diferente do que pesquisadores desavisados possam acreditar, o valor-<em>p</em> <strong>não</strong> fornece a probabilidade de a hipótese nula ser falsa - até porque, dentro da Inferência Clássica, calcular a probabilidade de um parâmetro estar dentro de um intervalo de valores não faz sentido, uma vez que, aqui, parâmetros são tratados como constantes.</p>
+<p>Além disso, como nota o próprio Fisher ao comentar sobre o cálculos de valores-<em>p</em> para testes qui-quadrado em seu livro “Statistical Methods for Research Workers”, essa medida <strong>não</strong> representa o <em>grau</em> da associação entre duas variáveis ou o <em>grau</em> da diferença entre dois efeitos; ela fornece apenas uma ideia de se essas associações ou diferenças são ou não de uma magnitude que pode ser atribuída ao acaso. Dessa forma, valores-<em>p</em> pequenos não definem, necessariamente, que um resultado encontrado tem grande relevância prática. Tomando como exemplo um estudo que busque encontrar diferenças entre tratamentos, por mais que o valor-<em>p</em> possa revelar a existência de evidências para se acreditar que dois efeitos são estatisticamente diferentes, essa diferença pode ser tão pequena a ponto de, na prática, ela não ser realmente significativa. Qualquer efeito, não importa quão mínimo, pode produzir um valor-<em>p</em> pequeno se o tamanho da amostra e a precisão das medições forem grandes o suficiente, e efeitos grandes podem produzir valores-<em>p</em> pouco impressionantes caso a amostra seja pequena e as medições forem imprecisas. Dessa forma, a utilização única e exclusivamente do valor-<em>p</em> para se decidir sobre a “significância” de um experimento vem sendo cada vez mais criticada, em especial porque, como já citado ao longo do texto, o termo “significante” deixou de denotar que um resultado merece uma investigação mais aprofundada e passou a ser sinônimo de importância científica.</p>
+<p>A discussão a respeito da má utilização do valor-<em>p</em> chegou, possivelmente, ao seu ápice em 2016, quando a American Statistical Association (ASA) publicou o artigo “The ASA Statement on p-Values: Context, Process, and Purpose”, que contém uma discussão a respeito do verdadeiro significado do valor-<em>p</em> e dos princípios relacionados a sua utilização. Desde então, a comunidade estatística passou a enfatizar cada vez mais a importância de se complementar - ou mesmo de se substituir - a utilização do valor-<em>p</em>, sendo muito recomendada a utilização de métodos que focalizem o processo de estimação, tais como intervalos de confiança e de predição, razões de verossimilhança e métodos Bayesianos, como intervalos de credibilidade e fatores de Bayes. Mesmo que todas essas práticas sejam dependentes de outras suposições, elas podem fornecer mais diretamente a dimensão do tamanho de um efeito - e de sua incerteza associada - ao invés de focar apenas na questão de uma hipótese ser “correta” ou não.</p>
+<p>Em suma, é no mínimo discutível que um único número substitua todo o processo científico que está por trás de uma análise estatística, e a insistência nesse erro é um grande empecilho para uma boa prática científica, para a qual boas práticas estatísticas são um componente essencial. Dessa forma, ao invés de se confiar unicamente no valor-<em>p</em> - que tem, é claro, a sua utilidade - para se decidir sobre a relevância de um estudo, um bom pesquisador deve focar em entender os princípios de um bom planejamento experimental, do valor que análises descritivas têm dentro de um estudo estatístico, da importância de se entender o fenômeno em estudo e da necessidade de se interpretar os resultados de uma análise dentro do contexto correto, de forma a se alcançar o verdadeiro entendimento a respeito de todas as medidas encontradas ao longo de todo o processo realizado.</p>
+</section>
+<section id="referências" class="level3">
+<h3 class="anchored" data-anchor-id="referências">Referências</h3>
+<p>Fisher, Ronald A. “Statistical methods for research workers”. <em>Breakthroughs in statistics: Methodology and distribution</em>. New York, NY: Springer New York, 1970. 66-70.</p>
+<p>Fisher, Ronald A. “The Statistical Method in Psychical Research”. <em>Proceedings of the Society for Psychical Research</em>, 38, 189-192.</p>
+<p>Neyman, J. e Pearson, E. S. (1928). “On the use and interpretation of certain test criteria for purposes of statistical inference”. <em>Biometrika</em>, 20A, 175–240.</p>
+<p>Morettin, P. A. e Bussab, W. de O. <em>Estatística Básica</em>. 10. ed.&nbsp;São Paulo: Saraiva, 2010.</p>
+<p>Salsburg, David S. <em>Uma senhora toma chá… como a estatística revolucionou a ciência no século XX</em>. Rio de Janeiro: Zahar, 2009.</p>
+<p>Wasserstein, Ronald L., and Nicole A. Lazar. “The ASA statement on p-values: context, process, and purpose.” <em>The American Statistician</em>, 70.2 (2016): 129-133.</p>
+
+
+
+</section>
+
+<div class="quarto-listing quarto-listing-container-default" id="listing-listing">
+<div class="list quarto-listing-default">
+
+</div>
+<div class="listing-no-matching d-none">
+No matching items
+</div>
+</div><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">BibTeX citation:</div><pre class="sourceCode code-with-copy quarto-appendix-bibtex"><code class="sourceCode bibtex">@online{sant'ana herzog2023,
+  author = {Sant’Ana Herzog, Rafael},
+  title = {O Valor-*p*},
+  date = {2023-08-24},
+  url = {https://rafaherzog.github.io/rafasantanah//posts/25-01-2022-rmm/},
+  langid = {en}
+}
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-sant'ana herzog2023" class="csl-entry quarto-appendix-citeas" role="listitem">
+Sant’Ana Herzog, Rafael. 2023. <span>“O Valor-*p*.”</span> August 24,
+2023. <a href="https://rafaherzog.github.io/rafasantanah//posts/25-01-2022-rmm/">https://rafaherzog.github.io/rafasantanah//posts/25-01-2022-rmm/</a>.
+</div></div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>

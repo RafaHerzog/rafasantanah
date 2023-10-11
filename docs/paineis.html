@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Rafael Sant’Ana Herzog - About</title>
+<title>Rafael Sant’Ana Herzog - Painéis de visualização</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -19,40 +19,6 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
-}
-/* CSS for syntax highlighting */
-pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-pre > code.sourceCode > span:empty { height: 1.2em; }
-.sourceCode { overflow: visible; }
-code.sourceCode > span { color: inherit; text-decoration: inherit; }
-div.sourceCode { margin: 1em 0; }
-pre.sourceCode { margin: 0; }
-@media screen {
-div.sourceCode { overflow: auto; }
-}
-@media print {
-pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-}
-pre.numberSource code
-  { counter-reset: source-line 0; }
-pre.numberSource code > span
-  { position: relative; left: -4em; counter-increment: source-line; }
-pre.numberSource code > span > a:first-child::before
-  { content: counter(source-line);
-    position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; display: inline-block;
-    -webkit-touch-callout: none; -webkit-user-select: none;
-    -khtml-user-select: none; -moz-user-select: none;
-    -ms-user-select: none; user-select: none;
-    padding: 0 4px; width: 4em;
-  }
-pre.numberSource { margin-left: 3em;  padding-left: 4px; }
-div.sourceCode
-  {   }
-@media screen {
-pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -141,7 +107,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">About</h1>
+<h1 class="title">Painéis de visualização</h1>
 </div>
 
 
@@ -156,17 +122,132 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </header>
 
-<p>About this site</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
+<div class="card" style="width:400px">
+<img class="card-img-top" src="paineis/PainelVigilanciaMaterna.png" alt="Card image">
+<div class="card-body">
+<h4 class="card-title anchored">
+John Doe
+</h4>
+<p class="card-text">
+Some example text.
+</p>
+<p><a href="#" class="btn btn-primary">See Profile</a></p>
+</div>
+</div>
+<style>
+.wrapper {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 100px;
+}
+
+.box1 {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  grid-row-start: 1;
+  grid-row-end: 2;
+}
+
+.box2 {
+  grid-column-start: 2;
+  grid-row-start: 1;
+  grid-row-end: 2;
+}
+
+</style>
+<div class="wrapper">
+<div class="box1">
+One
+</div>
+<div class="box2">
+Two
+</div>
+<div class="box3">
+Three
+</div>
+<div class="box4">
+Four
+</div>
+<div class="box5">
+Five
+</div>
+</div>
+<div class="wrapper">
+<div>
+<div class="card" style="width:400px">
+<img class="card-img-top" src="paineis/PainelVigilanciaMaterna.png" alt="Card image">
+<div class="card-body">
+<h4 class="card-title anchored">
+John Doe
+</h4>
+<p class="card-text">
+Some example text.
+</p>
+<p><a href="#" class="btn btn-primary">See Profile</a></p>
+</div>
+</div>
+<div>
+Two
+<p>
+I have some more content in.
+</p>
+<p>
+This makes me taller than 100 pixels.
+</p>
+</div>
+<div>
+<div class="card" style="width:400px">
+<img class="card-img-top" src="paineis/PainelVigilanciaMaterna.png" alt="Card image">
+<div class="card-body">
+<h4 class="card-title anchored">
+John Doe
+</h4>
+<p class="card-text">
+Some example text.
+</p>
+<p><a href="#" class="btn btn-primary">See Profile</a></p>
+</div>
+</div>
+<div>
+Four
+</div>
+<div>
+Five
+</div>
+</div>
+<div class="wrapper">
+<div class="box1">
+<div class="card" style="width:400px">
+<img class="card-img-top" src="paineis/PainelVigilanciaMaterna.png" alt="Card image">
+<div class="card-body">
+<h4 class="card-title anchored">
+John Doe
+</h4>
+<p class="card-text">
+Some example text.
+</p>
+<p><a href="#" class="btn btn-primary">See Profile</a></p>
+</div>
+</div>
+</div>
+<div class="box2">
+Two
+</div>
+<div class="box3">
+Three
+</div>
+<div class="box4">
+
+</div>
+</div>
+<div class="box5">
+Five
 </div>
 </div>
 
 
 
-</main> <!-- /main -->
+</div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {

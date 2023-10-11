@@ -11,21 +11,28 @@
     "href": "index.html",
     "title": "Rafael Sant’Ana Herzog",
     "section": "",
-    "text": "twitter\n  \n  \n    \n     Github\n  \n\n  \n  \nFinley Malloc is the Chief Data Scientist at Wengo Analytics. When not innovating on data platforms, Finley enjoys spending time unicycling and playing with her pet iguana.\n\n\nUniversity of California, San Diego | San Diego, CA PhD in Mathematics | Sept 2011 - June 2015\nMacalester College | St. Paul MA B.A in Economics | Sept 2007 - June 2011\n\n\n\nWengo Analytics | Head Data Scientist | April 2018 - present\nGeoScynce | Chief Analyst | Sept 2012 - April 2018"
+    "text": "twitter\n  \n  \n    \n     Github\n  \n\n  \n  \nOlá! Me chamo Rafael Sant’Ana Herzog, e você está em meu humilde site - que ainda está claramente em construção. Sou futuro estatístico que considera seriamente fazer mestrado em computação e que gosta de passar seu tempo livre assistindo séries, filmes e jogando alguns dos poucos jogos que ainda consegue.\n\n\nUniversidade Federal do Espírito Santo (UFES)\nEstudante do 8º período do bacharelado em Estatística (formatura prevista para agosto de 2024)\n\nMarço de 2020 até o presente\nCoeficiente de Rendimento de 9,49\n\n\n\n\nDesde dezembro de 2021, sou bolsista no Observatório Obstétrico Brasileiro (OOBr), onde analiso bases de dados públicos, escrevo publicações relacionadas a temas dentro da Estatística e construo e atualizo painéis de visualização utilizando o pacote {shiny}, do software R."
   },
   {
-    "objectID": "index.html#education",
-    "href": "index.html#education",
+    "objectID": "index.html#educação",
+    "href": "index.html#educação",
     "title": "Rafael Sant’Ana Herzog",
     "section": "",
-    "text": "University of California, San Diego | San Diego, CA PhD in Mathematics | Sept 2011 - June 2015\nMacalester College | St. Paul MA B.A in Economics | Sept 2007 - June 2011"
+    "text": "Universidade Federal do Espírito Santo (UFES)\nEstudante do 8º período do bacharelado em Estatística (formatura prevista para agosto de 2024)\n\nMarço de 2020 até o presente\nCoeficiente de Rendimento de 9,49"
   },
   {
-    "objectID": "index.html#experience",
-    "href": "index.html#experience",
+    "objectID": "index.html#experiência",
+    "href": "index.html#experiência",
     "title": "Rafael Sant’Ana Herzog",
     "section": "",
-    "text": "Wengo Analytics | Head Data Scientist | April 2018 - present\nGeoScynce | Chief Analyst | Sept 2012 - April 2018"
+    "text": "Desde dezembro de 2021, sou bolsista no Observatório Obstétrico Brasileiro (OOBr), onde analiso bases de dados públicos, escrevo publicações relacionadas a temas dentro da Estatística e construo e atualizo painéis de visualização utilizando o pacote {shiny}, do software R."
+  },
+  {
+    "objectID": "paineis.html",
+    "href": "paineis.html",
+    "title": "Painéis de visualização",
+    "section": "",
+    "text": "John Doe\n\n\nSome example text.\n\nSee Profile\n\n\n\n\n\nOne\n\n\nTwo\n\n\nThree\n\n\nFour\n\n\nFive\n\n\n\n\n\n\n\n\nJohn Doe\n\n\nSome example text.\n\nSee Profile\n\n\n\nTwo\n\nI have some more content in.\n\n\nThis makes me taller than 100 pixels.\n\n\n\n\n\n\n\nJohn Doe\n\n\nSome example text.\n\nSee Profile\n\n\n\nFour\n\n\nFive\n\n\n\n\n\n\n\n\nJohn Doe\n\n\nSome example text.\n\nSee Profile\n\n\n\n\nTwo\n\n\nThree\n\n\n\n\n\n\nFive"
   },
   {
     "objectID": "posts/15-03-2022-funcao-de-verossimilhanca/index.html",
@@ -72,7 +79,7 @@
   {
     "objectID": "posts.html",
     "href": "posts.html",
-    "title": "Meus posts",
+    "title": "Posts",
     "section": "",
     "text": "O valor-p\n\n\n\n\n\n\n\nestatística\n\n\nR\n\n\n\n\nEntendendo o conceito, a interpretação e a maneira correta de se utilizar o valor-p em testes de hipóteses\n\n\n\n\n\n\nAug 24, 2023\n\n\nRafael Sant’Ana Herzog\n\n\n\n\n\n\n  \n\n\n\n\nFunção de verossimilhança\n\n\n\n\n\n\n\nestatística\n\n\nR\n\n\n\n\nEntendendo o conceito e exemplificando a utilização da função de verossimilhança dentro da Estatística\n\n\n\n\n\n\nMar 15, 2022\n\n\nRafael Sant’Ana Herzog\n\n\n\n\n\n\n  \n\n\n\n\nIntervalos de confiança\n\n\n\n\n\n\n\nestatística\n\n\nR\n\n\n\n\nComo construir, aplicar e interpretar essas ferramentas estatísticas\n\n\n\n\n\n\nMar 15, 2022\n\n\nRafael Sant’Ana Herzog\n\n\n\n\n\n\n  \n\n\n\n\nEntendendo, calculando e visualizando a razão de mortalidade materna do Brasil com o R\n\n\n\n\n\n\n\nestatística\n\n\nR\n\n\nsaúde\n\n\n\n\nExplorando e realizando algumas discussões sobre esse indicador dentro do país por meio do R\n\n\n\n\n\n\nJan 25, 2022\n\n\nRafael Sant’Ana Herzog\n\n\n\n\n\n\nNo matching items"
   }

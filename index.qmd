@@ -15,26 +15,23 @@ about:
       href: https://github.com/RafaHerzog
 ---
 
-### This content appears above the formatted about page content.
+<!-- ### This content appears above the formatted about page content. -->
 
 :::{#hero-heading}
 
-Finley Malloc is the Chief Data Scientist at Wengo Analytics. When not innovating on data platforms, Finley enjoys spending  time unicycling and playing with her pet iguana.
+Olá! Me chamo Rafael Sant'Ana Herzog, e você está em meu humilde site - que ainda está claramente em construção. Sou futuro estatístico que considera seriamente fazer mestrado em computação e que gosta de passar seu tempo livre assistindo séries, filmes e jogando alguns dos poucos jogos que ainda consegue.
 
-## Education
+## Educação
 
-University of California, San Diego | San Diego, CA
-PhD in Mathematics | Sept 2011 - June 2015
+**Universidade Federal do Espírito Santo (UFES)**
 
-Macalester College | St. Paul MA
-B.A in Economics | Sept 2007 - June 2011
+Estudante do 8º período do bacharelado em Estatística (formatura prevista para agosto de 2024)
 
-## Experience
+  - Março de 2020 até o presente
+  - Coeficiente de Rendimento de 9,49
 
-Wengo Analytics | Head Data Scientist | April 2018 - present
+## Experiência
 
-GeoScynce | Chief Analyst | Sept 2012 - April 2018
+Desde dezembro de 2021, sou bolsista no [Observatório Obstétrico Brasileiro](https://observatorioobstetricobr.org/) (OOBr), onde analiso bases de dados públicos, escrevo publicações relacionadas a temas dentro da Estatística e construo e atualizo painéis de visualização utilizando o pacote [`{shiny}`](https://shiny.posit.co/), do software [R](https://www.r-project.org/).
 
 :::
-
-### This content appears below the formatted about page content.

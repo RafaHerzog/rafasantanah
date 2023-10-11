@@ -19,13 +19,15 @@ about:
 
 :::{#hero-heading}
 
-Olá! Me chamo Rafael Sant'Ana Herzog, e você está em meu humilde site - que ainda está claramente em construção. Sou futuro estatístico que considera seriamente fazer mestrado em computação e que gosta de passar seu tempo livre assistindo séries, filmes e jogando alguns dos poucos jogos que ainda consegue.
+Olá! Me chamo Rafael Sant'Ana Herzog, e você está em meu humilde site - que ainda está claramente em construção.
+
+Sou um futuro estatístico que considera seriamente fazer mestrado em computação e que gosta de passar seu tempo livre assistindo séries, filmes e jogando alguns dos poucos jogos que ainda consegue.
 
 ## Educação
 
-**Universidade Federal do Espírito Santo (UFES)**
+#### Universidade Federal do Espírito Santo (UFES)
 
-Estudante do 8º período do bacharelado em Estatística (formatura prevista para agosto de 2024)
+Estudante do 8º período do bacharelado em Estatística (com formatura prevista para agosto de 2024)
 
   - Março de 2020 até o presente
   - Coeficiente de Rendimento de 9,49
